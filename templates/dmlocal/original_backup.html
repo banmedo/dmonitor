@@ -1,0 +1,204 @@
+{% load staticfiles %}
+
+<html>
+<head>
+  <link rel="stylesheet" href="{% static 'dmlocal\bootstrap.min.css' %}"/>
+  <link rel="stylesheet" href="{% static 'dmlocal\leaflet.css' %}"/>
+  <link rel="stylesheet" href="{% static 'dmlocal\leaflet-slider.css' %}"/>
+  <link rel="stylesheet" href="{% static 'dmlocal\main0.css' %}"/>
+  <script src="{% static 'dmlocal\leaflet.js' %}"></script>
+  <script src="{% static 'dmlocal\leaflet-slider.js' %}"></script>
+  <!-- <script src="{% static 'dmlocal\proj4.js' %}"></script>
+  <script src="{% static 'dmlocal\proj4leaflet.js' %}"></script> -->
+  <script src="{% static 'dmlocal\L.mask.js' %}"></script>
+  <script src="{% static 'dmlocal\jquery-2.2.0.js' %}"></script>
+  <script src="{% static 'dmlocal\jquery-ui.js' %}"></script>
+  <script src="{% static 'dmlocal\bootstrap.min.js' %}"></script>
+  <script src="{% static 'dmlocal\highcharts.js' %}"></script>
+  <!-- <script type="text/javascript" src="http://code.highcharts.com/highcharts-more.js"></script>
+  <script type="text/javascript" src="http://code.highcharts.com/modules/exporting.js"></script>
+  <script src="http://highcharts.github.io/export-csv/export-csv.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+  <script src="{% static 'dmlocal\CropCalendar.js' %}"></script>
+  <script src="{% static 'dmlocal\VisParams.js' %}"></script>
+
+  <script src="{% static 'dmlocal\Shapes.js' %}"></script>
+  <script src="{% static 'dmlocal\MapFunctions.js' %}"></script>
+  <script src="{% static 'dmlocal\main.js' %}"></script>
+  <style>
+    body{
+      background: #f5f5f5;
+      min-height: 100%;
+      min-width: 100%;
+      overflow-x:hidden;
+    }
+    .card {
+      background:white;
+      margin:4px;
+      box-shadow:2px 2px 3px #ccc;
+    }
+    .maincomp{
+      height:90%;
+      overflow-y:auto;
+    }
+    #map-container{
+      height:57%;
+    }
+    .no-graph{
+      width: 100%;
+      height: 38%;
+      text-align: center;
+    }
+    .no-graph h4{
+      position: relative;
+      top:50%;
+      transform:translateY(-50%);
+    }
+    .panel{
+      overflow:hidden;
+    }
+    .panel-heading{
+      height:auto;
+    }
+    #crop-calendar{
+      overflow: hidden;
+    }
+    .select2.select2-container{
+      width:100% !important;
+    }
+    .sidebar{
+      padding-left:4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="head-bar col-lg-12" style="margin-bottom:4px">
+    <span class="app-title"> Drought Monitor </span>
+    <span class="regional-link"> <a href="http://tethys.icimod.org/apps/bldas-explorer/" target="blank">Visit Regional Drought Monitor</a></span>
+    <span class="icimod"><img src="{% static 'ICIMOD_Logo_White.gif' %}"/> </span>
+  </div>
+  <div class="sidebar col-lg-2">
+    <div class="card form-container col-sm-12" style="height:65%">
+      <form class="form-horizontal">
+        <fieldset>
+          <h4>Select Location</h4>
+          <div class="form-group">
+            <div class="col-sm-12">
+                <select id="selectl0" name="selectl0" class="form-control" >
+                  <!-- <option value="Nepal">Nepal</option> -->
+                  <option value="Afghanistan">Afghanistan</option>
+                  <!--option value="Bangladesh">Bangladesh</option-->
+                </select>
+                <select id="selectl1" name="selectl1" class="form-control" style="margin-top:5px">
+                  <option value="Chitwan">Chitwan</option>
+                  <option value="Kailali">Kailali</option>
+                  <option value="Jumla">Jumla</option>
+                </select>
+            </div>
+          </div>
+          <h4>Select Crop</h4>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <select id="selectcrop" name="selectcrop" class="form-control">
+                <!-- <option value="All">All</option>
+                <option value="Rice">Rice</option>
+                <option value="Wheat">Wheat</option>
+                <option value="Maize">Maize</option>
+                <option value="Barley">Barley</option>
+                <option value="Millet">Millet</option> -->
+              </select>
+            </div>
+          </div>
+          <h4>Select Periodicity</h4>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <select id="selectdataset" name="selectdataset" class="form-control">
+                <option value="dd">Dekad (10 Days)</option>
+                <option value="mm">1 Month</option>
+                <option value="3m">3 Months</option>
+              </select>
+            </div>
+          </div>
+          <h4>Select Sowing Year</h4>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <select id="selectyear" name="selectyear" class="form-control">
+                <option value="2018">2018</option>
+                <option value="2017" selected="selected">2017</option>
+                <option value="2016">2016</option>
+                <option value="2015">2015</option>
+                <option value="2014">2014</option>
+                <option value="2013">2013</option>
+                <option value="2012">2012</option>
+                <option value="2011">2011</option>
+                <option value="2010">2010</option>
+                <option value="2009">2009</option>
+                <option value="2008">2008</option>
+                <option value="2007">2007</option>
+                <option value="2006">2006</option>
+                <option value="2005">2005</option>
+                <option value="2004">2004</option>
+                <option value="2003">2003</option>
+                <option value="2002">2002</option>
+                <option value="2001">2001</option>
+              </select>
+            </div>
+          </div>
+          <h4 target="" onclick="app.triggerCollapse(this)" style="cursor:pointer">Select Indices</h4>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <select id="selectindices" class="form-control" multiple="multiple">
+                <option value="temp">Temperature (min, max)</option>
+                <option value="rain">Rainfall</option>
+                <option value="soilMoist">Soil Moisture</option>
+                <option value="evap">Total Evapotranspiration</option>
+                <option value="NDVI">NDVI</option>
+                <option value="ndviAnomaly">NDVI Anomaly</option>
+                <option value="spi-1To1">Area Under SPI (-1 to 1)</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" class="btn btn-success" onclick="app.computeClicked(event)">Compute Indices</button>
+        </fieldset>
+      </form>
+    </div>
+    <div class="card crop-calendar-container col-sm-12" style="height:20%">
+      <h4>Crop Calendar  <span id="crop-calendar-crop-type"> </span></h4>
+      <!-- <div style="text-align:center;font-size:12px">
+        <div style="display:inline-block;height:15px;width:15px;border-radius:50%;background:#F4D35E;"></div>Sowing Start
+        <div style="display:inline-block;height:15px;width:15px;border-radius:50%;background:#F95738;"></div>Harvest End
+      </div><br> -->
+      <!-- <div id="crop-calendar">Select a crop and press Compute</div> -->
+      <div id="crop-calendar">
+          <div class="crop-all-year hidden"> Showing yearly values. Please select a crop to view respective information </div>
+          <div class="sowing crop-season">  <br>
+            <span class='start'>s</span><span class='bar-container'><span class="bar">&nbsp;</span></span><span class='end'>e</span>
+          </div><br>
+          <!-- <div class="peak crop-season"> PEAK <br>
+            <span class='start'>s</span><span class='bar-container'><span class="bar">&nbsp;</span></span><span class='end'>e</span>
+          </div><br> -->
+          <!-- <div class="harvesting crop-season"> HARVESTING <br>
+            <span class='start'>s</span><span class='bar-container'><span class="bar">&nbsp;</span></span><span class='end'>e</span>
+          </div><br> -->
+      </div>
+    </div>
+  </div>
+  <div class="maincomp col-lg-8" style="padding-left:4px;">
+    <div class="card map-container col-sm-12" id="map-container"></div>
+    <div class="no-graph card col-sm-12"><h4>Select an index to view a graph</h4></div>
+    <div class="graph-section col-sm-12" style="width: calc(100% + 4px);"></div>
+  </div>
+  <div class="sidebar col-lg-2">
+    <div class="card form-container col-sm-12" style="height:65%">
+      <p><b>About</b></p>
+      <p>Information about this application</p>
+
+    </div>
+    <div class="card crop-calendar-container col-sm-12" style="height:20%"></div>
+  </div>
+  <!-- <div class="top-section col-sm-12"></div> -->
+</body>
+</html>
