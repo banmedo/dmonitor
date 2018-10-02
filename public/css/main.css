@@ -133,6 +133,9 @@ h4{
   fill:#1308af;
   opacity:0.7;
 } */
+.highcharts-menu hr{
+  margin:0;
+}
 .highcharts-credits{
   display:none;
 }

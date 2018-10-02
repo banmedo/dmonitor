@@ -342,7 +342,7 @@ app.createHelpers = function(){
     let year = parseInt($("#selectyear").val());
 
     if (ed[1]>year) ed[0]+=12;
-
+    // if (app.URLparams['p'] == '3m') return [sd[0]-2, ed[0]-2];
     return [sd[0], ed[0]];
     // return [1,12];
   }
@@ -383,14 +383,35 @@ app.createHelpers = function(){
     let year = $("#selectyear").val();
     $("#startDate").MonthPicker({ Button: false,
       MinMonth: new Date(year,0),
-      MaxMonth: new Date(year,11),
-      OnAfterChooseMonth: function( selectedDate ){app.onRangeChanged();}});
-    $("#endDate").MonthPicker({ Button: false,
-      MinMonth: new Date(year,0),
-      MaxMonth: new Date(parseInt(year)+1,11),
-      OnAfterChooseMonth: function( selectedDate ){app.onRangeChanged();}});
+      MaxMonth: new Date(year,11)<new Date().addMonths(-2)?new Date(year,11):new Date().addMonths(-2),
+      OnAfterChooseMonth: function( e ){app.onStartChanged(e);}});
+    // $("#endDate").MonthPicker({ Button: false,
+    //   MinMonth: new Date(year,0),
+    //   MaxMonth: new Date(parseInt(year)+1,11),
+    //   OnAfterChooseMonth: function( e ){app.onEndChanged(e);}});
     $("#startDate").val("01/"+year);
     $("#endDate").val("12/"+year);
+    app.onStartChanged();
+  }
+
+  app.onStartChanged = function(e){
+    let sd = $('#startDate').val();
+    let ed = $('#endDate').val();
+    sd = sd.split("/").map(app.parseIntArr);
+    ed = ed.split("/").map(app.parseIntArr);
+    let nsd = new Date(sd[1],sd[0]-1);
+    let ned = new Date(ed[1],ed[0]-1);
+    let limitEndMin = new Date(sd[1],sd[0]-1).addMonths(1);
+    let limitEndMax = new Date(sd[1],sd[0]-1).addMonths(11);
+    let endBuffer = -1;
+    if ($("input[name=periodicity]:checked").val() == '3m') endBuffer = -3;
+    limitEndMax = limitEndMax < new Date().addMonths(endBuffer) ? limitEndMax:new Date().addMonths(endBuffer);
+    if (((ned.getYear()-nsd.getYear())*12+(ned.getMonth()-nsd.getMonth()))>11)
+      ned = nsd.addMonths(11)
+    $("#endDate").val([ned.getMonth()+1,ned.getFullYear()].join("/"));
+    $("#endDate").MonthPicker({
+      MinMonth:limitEndMin,
+      MaxMonth:limitEndMax});
   }
 
   // handle date range change
@@ -406,7 +427,7 @@ app.createHelpers = function(){
     let maxDate = new Date(year+1,11);
 
     let dateDiff = ned-nsd;
-    console.log((ned.getYear()-nsd.getYear())*12+(ned.getMonth()-nsd.getMonth()));
+    // console.log((ned.getYear()-nsd.getYear())*12+(ned.getMonth()-nsd.getMonth()));
     if (dateDiff <= 0){
       if (sd[0] == 12 && sd[1] == year+1){
         nsd.setMonth(nsd.getMonth()-1);
@@ -787,14 +808,15 @@ app.initiUI = function(){
   $("#startDate").MonthPicker({ Button: false,
     MinMonth: new Date(app.URLparams.y,0),
     MaxMonth: new Date(app.URLparams.y,11),
-    OnAfterChooseMonth: function( selectedDate ){app.onRangeChanged();}});
+    OnAfterChooseMonth: function( e ){app.onStartChanged(e);}});
   $("#endDate").MonthPicker({ Button: false,
     MinMonth: new Date(app.URLparams.y,0),
-    MaxMonth: new Date(parseInt(app.URLparams.y)+1,11),
-    OnAfterChooseMonth: function( selectedDate ){app.onRangeChanged();}});
+    MaxMonth: new Date(parseInt(app.URLparams.y)+1,11)});
   // $(".datepicker").on('change', function(e){app.onRangeChanged(e);});
   $("#startDate").val(app.getDateString(app.URLparams.sd,app.URLparams.y));
   $("#endDate").val(app.getDateString(app.URLparams.ed,app.URLparams.y));
+
+  app.onStartChanged();
   app.map = L.map('map-container').setView([27, 84], 4);
   app.topMap = L.map('top-map-container', {zoomControl: false, attributionControl:false}).setView([27, 84], 4);
   // light theme basemap

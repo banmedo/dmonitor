@@ -293,7 +293,8 @@ app.createHelpers = function(){
     var today = new Date();
     var month = today.getMonth()+1; // this Month but our month index starts from 1
     var year  = today.getFullYear();
-    app.activeCropCalendar = [month,month+12]; //get 12 months data
+    app.activeCropCalendar = [month, month+12]; //get 12 months data
+    if (app.URLparams['p'] == '3m') return [month-2, month+10];
     return app.activeCropCalendar;
   }
 
@@ -433,7 +434,7 @@ app.createHelpers = function(){
       mappingFun : [,,VALUESCALE['rainfallAggregate'],],
       metric: ['min', 'max','max','mean'],
       whichSeries: [0,0,1,0],
-      names: ['Min Rainfall', 'Max Rainfall', 'Aggregated Rainfall','Rainfall LTA'],
+      names: ['Min Rainfall', 'Max Rainfall', 'Aggregated Rainfall','Long Term Average'],
       graphType: [,,'line','point'],
       yLabels:['Rainfall', 'Accumulated Rainfall'],
       color:[app.COLORS.MINRAIN, app.COLORS.MAXRAIN, app.COLORS.AGGRAIN, app.COLORS.LTA]
