@@ -69,6 +69,16 @@ class Dmlocal(TethysAppBase):
                 url='api/getLTAStats',
                 controller='dmlocal.api.getLTAStats'
             ),
+            UrlMap(
+                name='SAAreaUnder',
+                url='api/seasonagg',
+                controller='dmlocal.api.getSeasonalAggregatedRatio'
+            ),
+            UrlMap(
+                name='PercentageOfNoemal',
+                url='api/percentageOfNormal',
+                controller='dmlocal.api.getPercentageOfNormal'
+            )
         )
 
         return url_maps

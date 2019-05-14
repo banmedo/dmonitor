@@ -100,8 +100,24 @@ var INDICES = [
   ["rain","Rainfall"],
   ["soilMoist","Soil Moisture"],
   ["evap","Total Evapotranspiration"],
-  ["NDVI","NDV"],
+  ["NDVI","NDVI"],
   ["tempMean", "Mean Temperature" ],
   ["ndviAnomaly","NDVI Anomaly"],
+  ["ch2Spi", "SPI"],
+  ["seasonAgg", "Aggregated Anomalies"],
+  ["pNormal", "Percentage of Normal"]
   // ["spi-1To1","Area Under SPI (-1 to 1)"]
 ]
+
+
+var TOOLTIPS = {
+  "tempExtreme":"Exteme temperatures on the agricultural region of district",
+  "tempMean":"Mean temperature of agricultural region of district",
+  "rain":"Average and accumulative rainfall of the region",
+  "NDVI":"MAX NDVI of the region",
+  "ndviAnomaly":"NDVI anomaly of the region",
+  "soilMoist":"Mean soil moisture of the region",
+  "evap":"Mean Evapotranspiration of the region",
+  "seasonAgg":"Area under seasonally aggregated anomalies",
+  "seasonAgg":"Percentage of normal equating to current value "
+}

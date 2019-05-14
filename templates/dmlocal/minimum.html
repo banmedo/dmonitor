@@ -4,9 +4,9 @@
 {% load staticfiles %}
 
 {% block header_buttons %}
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
-    <!-- <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a> -->
-  </div>
+  <!-- <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
+    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+  </div> -->
 {% endblock %}
 
 {% block app_navigation_items %}
@@ -17,8 +17,24 @@
           <h4>Select District</h4>
           <div class="form-group">
             <div class="col-sm-12">
-                <select id="selectl1" name="selectl1" class="form-control" style="margin-top:5px">
-                </select>
+                <input type='radio' name='level' class='col-sm-1' id="bradiol0">
+                <div class='col-sm-11' id="selectl0" value="Nepal">
+                  Nepal
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <input type='radio' name ='level' class='col-sm-1' style='margin-top:10px' id="bradiol1">
+                <div class='col-sm-11'>
+                  <select id="selectl1" name="selectl1" class="form-control" style="margin-top:5px" disabled=true>
+                  </select>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <input type='radio' name='level' class='col-sm-1' style='margin-top:10px' id="bradiol2" checked>
+                <div class='col-sm-11'>
+                  <select id="selectl2" name="selectl2" class="form-control" style="margin-top:5px">
+                  </select>
+                </div>
             </div>
           </div>
           <h4>Select Periodicity</h4>
@@ -63,14 +79,15 @@
     </div>
     <div class="form-container col-sm-12" style="height:65%;text-align:justify">
       <h3>About</h3>
-      <span >Assessment and monitoring of drought related indices are essential for
-        the sustainable management of agricultural resources. This is essential
-        in the Hindu Kush-Himalayan region as a lot of people in the region are
-        dependent on agriculture as primary source of their income.
-        <bR><br>The application provides easy access to various indices related
-        to drought such as precepitation, temperature, soil moisture, evapotranspiration
-        and spi. It provides user friendly tools for generating statistics to understand
-        the change processes and to support the informed decisions</span>
+      <span >The International Centre for Integrated Mountain Development (ICIMOD)
+        under its SERVIR Hindu Kush Himalaya (SERVIR-HKH) and Climate Services for
+        Resilient Development (CSRD) initiatives is collaborating with John Hopkins
+        University to establish an agricultural drought monitoring and early warning
+        system for the Hindukush Himalayan Region. The system incorporates climatic
+        and land surface models with assimilation of suitable earth observation
+        datasets to produce drought monitoring and warning information.
+        <br><br>The infographics presented in the information system accounts
+        for the crop distributions crop calendars. </span>
     </div>
   </div>
 {% endblock %}
@@ -123,7 +140,9 @@
   <script src="{% static 'dmlocal/js/bootstrap.min.js' %}"></script>
   <!-- <script src="{% static 'dmlocal/js/highcharts.js' %}"></script> -->
   <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+  <script type="text/javascript" src="http://code.highcharts.com/highcharts-more.js"></script>
   <script type="text/javascript" src="http://code.highcharts.com/modules/exporting.js"></script>
+  <script type="text/javascript" src="http://code.highcharts.com/modules/export-data.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>

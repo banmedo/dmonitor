@@ -6,7 +6,9 @@ app.createConstants = function(){
     LTAAPI : '/apps/dmlocal/api/getLTAStats/',
     AREAUNDERAPI : '/apps/dmlocal/api/getAreaUnder/',
     // GEOMSAPI : '/droughtmonitor/district/api/getGeomList/'
-    GEOMSAPI : '/apps/dmlocal/api/getGeomList/'
+    GEOMSAPI : '/apps/dmlocal/api/getGeomList/',
+    SEASONAGG : '/apps/dmlocal/api/seasonagg',
+    PNORMAL : '/apps/dmlocal/api/percentageOfNormal'
   }
   app.DEFAULTS = {
     COUN: 'Nepal',
@@ -15,7 +17,7 @@ app.createConstants = function(){
       'Afghanistan': 'Badakhshan'
     },
     PERIOD: 'mm',
-    YEAR: '2017',
+    YEAR: '2018',
     INDICES: 'rain,evap,soilMoist,tempExtreme'
   }
   app.COLORS = {
@@ -53,9 +55,9 @@ app.parseParameters = function(){
   app.URLparams['i'] = getParam('i');
   var today = new Date();
   var month = today.getMonth();
-  var year = today.getFullYear();
+  var year = app.DEFAULTS.YEAR;
   // if month is not december, start from last year
-  if (month < 12) year--;
+  // if (month < 12) year--;
   app.URLparams['y'] = year.toString();//app.DEFAULTS.YEAR;
   let flagChangeURL = false;
   let url = document.location.href;
@@ -159,10 +161,11 @@ app.createHelpers = function(){
     app.currentGraphs++;
     return chart;
   }
-  app.addGraphOnDiv = function(divID, options){
-    let titleHTML = '<div class=panel-heading style=height:20px>'+options.chartTitle+'</div>';
-    let chartHTML = '<div id='+divID+'child style="height:calc(100% - 20px)"></div>';
+  app.addGraphOnDiv = function(divID, ref, options){
+    let titleHTML = '<div class=panel-heading style=height:20px title="'+TOOLTIPS[ref]+'">'+options.chartTitle+'</div>';
+    let chartHTML = '<div id='+divID+'child style="height:calc(100% - 20px);width:100%"></div>';
     $("#"+divID).html(titleHTML+chartHTML);
+    // $("#"+divID+" .panel-heading").tooltip({placement:'bottom'});
     var chart = Highcharts.chart(divID+'child', options);
     app.currentGraphs++;
     return chart;
@@ -187,7 +190,7 @@ app.createHelpers = function(){
     options.xAxis.categories = data['headers'];
     options.series[0].data = data['data'];
     // return app.addGraph('.graph-section',options);
-    return app.addGraphOnDiv(data.div,options);
+    return app.addGraphOnDiv(data.div,data.ref,options);
   }
 
   app.addSeries = function(chart, data){
@@ -225,27 +228,40 @@ app.createHelpers = function(){
       dataType: 'json',
       success:function(resp){
         resp = resp.sort();
+        var l1names = [];
+        var l2names = [];
+        resp.forEach(function(val){
+          if(val.substr(0,2) == 'l1') l1names.push(val.substr(2));
+          else if (val.substr(0,2) == 'l2') l2names.push(val.substr(2));
+        });
+        // resp = resp.map(function(val){return val.substr(2)});
         var options = '';
-        for (var i =0; i< resp.length; i++){
-          options += '<option value="'+resp[i]+'">'+resp[i]+'</option>'
+        for (var i =0; i< l1names.length; i++){
+          options += '<option value="'+l1names[i]+'">'+l1names[i]+'</option>'
         }
         $("#selectl1").html(options);
-        let l1 = app.URLparams['d'];
-        if (!resp.includes(l1)) l1 = app.DEFAULTS.DIST[l0];
-        $("#selectl1").val(l1);
+        var options = '';
+        for (var i =0; i< l2names.length; i++){
+          options += '<option value="'+l2names[i]+'">'+l2names[i]+'</option>'
+        }
+        $("#selectl2").html(options);
+        let l2 = app.URLparams['d'];
+        if (!resp.includes(l2)) l2 = app.DEFAULTS.DIST[l0];
+        $("#selectl2").val(l2);
         $("button").removeAttr('disabled');
-        mapApp.updateGeometry(l0, l1);
+        mapApp.updateGeometry(l0, 'l2'+l2);
         // app.geomListLoading = false
         // app.updateSelectCrop();
         app.computeClicked();
       }
     });
   }
+
   // update crop DROPDOWNS
   app.updateSelectCrop = function(){
     // var l0 = $("#selectl0").val();
     var l0 = app.URLparams['c'];
-    var l1 = $("#selectl1").val();
+    var l1 = $("#selectl2").val();
     var cal = cropCalendar[l0][l1];
     var cropList = Object.keys(cal);
     var html = '<option value = "All">All</option>';
@@ -291,10 +307,13 @@ app.createHelpers = function(){
     //   return months[(value-1)%12];
     // }
     var today = new Date();
-    var month = today.getMonth()+1; // this Month but our month index starts from 1
+    var month = today.getMonth(); // prev Month as our month index starts from 1 so month +1 -1
     var year  = today.getFullYear();
-    app.activeCropCalendar = [month, month+12]; //get 12 months data
-    if (app.URLparams['p'] == '3m') return [month-2, month+10];
+    var endMonth = month;
+    if (month < 10) endMonth = month+12; // jump year for months after october
+    app.activeCropCalendar = [10, endMonth]; //get 12 months data
+    if (app.URLparams['p'] == '3m') app.activeCropCalendar = [8, endMonth-2];
+    // app.activeCropCalendar = [10, endMonth];
     return app.activeCropCalendar;
   }
 
@@ -318,12 +337,29 @@ app.createHelpers = function(){
   //MAKING DROPDOWNS RESPONSIVE
   app.makeDropdownsResponsive = function(){
     // $("#selectl0").on("change", app.populateL1);
+    $("input[name=level]").on("change", function(e){
+      var source = e.target.id;
+      var level = source.substr(-2);
+      $("#selectl1").prop('disabled',true);
+      $("#selectl2").prop('disabled',true);
+      $("#select"+level).prop('disabled', false);
+
+      var geom = $("#select"+level).val();
+      if (level == 'l0') mapApp.updateGeometry(app.URLparams['c'], level+$("#select"+level).text().trim());
+      else mapApp.updateGeometry(app.URLparams['c'], level+$("#select"+level).val());
+    });
 
     $("#selectl1").on("change", function(e){
       // mapApp.updateGeometry($("#selectl0").val(), $(this).val());
-      mapApp.updateGeometry(app.URLparams['c'], $(this).val());
+      mapApp.updateGeometry(app.URLparams['c'], 'l1'+$(this).val());
       // app.updateSelectCrop();
     });
+    $("#selectl2").on("change", function(e){
+      // mapApp.updateGeometry($("#selectl0").val(), $(this).val());
+      mapApp.updateGeometry(app.URLparams['c'], 'l2'+$(this).val());
+      // app.updateSelectCrop();
+    });
+
     // $("#selectcrop").on("change", function(e){
       //   app.fetchCropCalendar();
       // });
@@ -400,6 +436,7 @@ app.createHelpers = function(){
     // console.log(selectedIndices.includes("tempExtreme"))
     if (selectedIndices.includes("tempExtreme")) app.getGraphFromBldas(addToDefaultOptions({
       div: divIDs.tempExtreme,
+      ref:"tempExtreme",
       title: "Temperature (&deg;C)",
       variable: ['tempMin', 'tempMax','LTA_temp'],
       mappingFun: [VALUESCALE['temp'], VALUESCALE['temp'], VALUESCALE['temp']],
@@ -411,6 +448,7 @@ app.createHelpers = function(){
     }));
     if (selectedIndices.includes("tempMean")) app.getGraphFromBldas(addToDefaultOptions({
       div: divIDs.tempMean,
+      ref:"tempMean",
       title: "Temperature (&deg;C)",
       variable: ['temp', 'LTA_temp'],
       mappingFun: [VALUESCALE['temp'], VALUESCALE['temp']],
@@ -429,21 +467,24 @@ app.createHelpers = function(){
     // }));
     if (selectedIndices.includes("rain")) app.getGraphFromBldas(addToDefaultOptions({
       div: divIDs.rain,
+      ref:"rain",
       title: "Rainfall (mm/day)",
-      variable: ['rain', 'rain','rain', 'LTA_rain'],
-      mappingFun : [,,VALUESCALE['rainfallAggregate'],],
-      metric: ['min', 'max','max','mean'],
-      whichSeries: [0,0,1,0],
-      names: ['Min Rainfall', 'Max Rainfall', 'Aggregated Rainfall','Long Term Average'],
-      graphType: [,,'line','point'],
+      variable: ['rain','rain', 'LTA_rain'],
+      mappingFun : [,VALUESCALE['rainfallAggregate'],],
+      metric: ['mean','mean','mean'],
+      whichSeries: [0,1,0],
+      names: ['Mean Rainfall',  'Aggregated Rainfall','Long Term Average'],
+      graphType: [,'line','point'],
       yLabels:['Rainfall', 'Accumulated Rainfall'],
-      color:[app.COLORS.MINRAIN, app.COLORS.MAXRAIN, app.COLORS.AGGRAIN, app.COLORS.LTA]
+      color:[app.COLORS.MAXRAIN, app.COLORS.AGGRAIN, app.COLORS.LTA]
     }));
     if (selectedIndices.includes("NDVI")) app.getGraphFromBldas(addToDefaultOptions({
       div: divIDs.NDVI,
+      ref:"NDVI",
       title: "NDVI",
       variable: ['emodisNdvi'],
       mappingFun: [VALUESCALE['emodisNdvi']],
+      graphType: ['line'],
       names: ['NDVI'],
       color:[app.COLORS.NDVI]
     }));
@@ -459,6 +500,7 @@ app.createHelpers = function(){
     // }));
     if (selectedIndices.includes("ndviAnomaly")) app.getGraphFromBldas(addToDefaultOptions({
       div: divIDs.ndviAnomaly,
+      ref:"ndviAnomaly",
       title: "NDVI anomaly",
       variable: ['ndviAnomaly'],
       graphType: ['line'],
@@ -468,6 +510,7 @@ app.createHelpers = function(){
     }));
     if (selectedIndices.includes("soilMoist")) app.getGraphFromBldas(addToDefaultOptions({
       div: divIDs.soilMoist,
+      ref:"soilMoist",
       title: "Soil Moisture (kg/m<sup>2</sup>)",
       variable: ['soilMoist', 'LTA_soilMoist'],
       names: ['Soil Moisture', 'Long Term Average'],
@@ -476,7 +519,8 @@ app.createHelpers = function(){
     }));
     if (selectedIndices.includes("evap")) app.getGraphFromBldas(addToDefaultOptions({
       div: divIDs.evap,
-      title: "Total Evapotranspiration (kg/m<sup>2</sup>)",
+      ref:"evap",
+      title: "Total Evapotranspiration (mm/day)",
       variable: ['evap','LTA_evap'],
       names: ['Total Evapotranspiration', 'Long Term Average'],
       graphType: [,'point'],
@@ -487,16 +531,27 @@ app.createHelpers = function(){
     //   variable: ['ch2Spi'],
     //   names: ['SPI']
     // }));
-    if (selectedIndices.includes("spi-1To1")) app.getGraphFromBldas(addToDefaultOptions({
-      div: divIDs["spi-1To1"],
-      url: app.API.AREAUNDERAPI,
-      variable: ['ch2Spi'],
-      metric: ['area_under'],
-      title: 'Area Under SPI range (-1 and 1) (km<sup>2</sup>)',
-      names: ['Area Under SPI range (-1 and 1)'],
-      maxVal: 1,
-      minVal: -1,
-      color: [app.COLORS.SPI1]
+    // if (selectedIndices.includes("spi-1To1")) app.getGraphFromBldas(addToDefaultOptions({
+    //   div: divIDs["spi-1To1"],
+    //   url: app.API.AREAUNDERAPI,
+    //   variable: ['ch2Spi'],
+    //   metric: ['area_under'],
+    //   title: 'Area Under SPI range (-1 and 1) (km<sup>2</sup>)',
+    //   names: ['Area Under SPI range (-1 and 1)'],
+    //   maxVal: 1,
+    //   minVal: -1,
+    //   color: [app.COLORS.SPI1]
+    // }));
+    if (selectedIndices.includes("seasonAgg")) app.getSeasonalAggregatedRatio(addToDefaultOptions({
+      div: divIDs.seasonAgg,
+      title: "Seasonally Aggregated Values",
+      ref:"seasonAgg"
+    }));
+
+    if (selectedIndices.includes("pNormal")) app.getPercentageOfNormal(addToDefaultOptions({
+      div: divIDs.pNormal,
+      title: "Percentage Of Normals",
+      ref:"pNormal"
     }));
   }
 
@@ -535,6 +590,7 @@ app.createHelpers = function(){
     let whichSeries = args['whichSeries'];
     let color = args['color'];
     let div = args['div'];
+    let ref = args['ref'];
 
     let numVariables = args['variable'].length;
     let currentVar = 0;
@@ -599,6 +655,7 @@ app.createHelpers = function(){
               graphType: graphType,
               color:color[currentVar],
               yLabels: yLabels,
+              ref:ref,
               title:title+" <span class = periodicity >"+args['geometry']+" | "+period_name+"</span>"});
             else app.addSeries(currentChart, {
               headers: headers,
@@ -620,6 +677,85 @@ app.createHelpers = function(){
       app.activeRequests.push(currentRequest);
     }
   };
+
+  app.getSeasonalAggregatedRatio = function(args){
+    $.ajax({
+      url: app.API.SEASONAGG,
+      success: function(response){
+        var series = []
+        for(var i=0;i<response.series.length;i++){
+          series.push({
+            name:response.names[i],
+            data:response.series[i]
+          });
+        }
+        var options = {
+          chartTitle: args.title,
+          chart: {type: 'column'},
+          title: {text: null},
+          xAxis: {categories: response.categories},
+          yAxis: {
+            min: 0,
+            max: 100,
+            title: {text: 'Percentage Area Covered'},
+            stackLabels: {
+              enabled: true,
+              style: {
+                fontWeight: 'bold',
+                color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+              }
+            }
+          },
+          legend: {
+              align: 'right',
+              verticalAlign: 'top',
+              backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+              borderColor: '#CCC',
+              borderWidth: 1,
+              shadow: false
+          },
+          tooltip: {
+              headerFormat: '<b>{point.x}</b><br/>',
+              pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+          },
+          plotOptions: {
+              column: {
+                  stacking: 'normal',
+                  dataLabels: {
+                      enabled: true,
+                      color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                  }
+              }
+          },
+          series: series
+        };
+        app.addGraphOnDiv(args.div,args.ref,options);
+      }
+    })
+  }
+
+  app.getPercentageOfNormal = function(args){
+    $.ajax({
+      url: app.API.PNORMAL,
+      success: function(response){
+        console.log(response);
+        var options = {
+          chartTitle: args.title,
+          chart: {polar:true, type:'line'},
+          title: {text: null},
+          xAxis: {categories: response.categories,tickmarkPlacement: 'on'},
+          yAxis: {min: 0,max: 100,title: null,lineWidth: 0,gridLineInterpolation: 'polygon'},
+          legend: {enabled:false},
+          tooltip: {
+              headerFormat: '<b>{point.x}</b><br/>',
+              pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+          },
+          series: [{data:response.series, pointPlacement:'on'}]
+        };
+        app.addGraphOnDiv(args.div,args.ref,options);
+      }
+    })
+  }
 
   app.updateDropdownBinding = function(e){
     var selectedIndices = [
@@ -644,7 +780,7 @@ app.createHelpers = function(){
   // update the URL of application based on options
   app.updateURL = function(){
     let l0 = app.URLparams['c'];
-    let l1 = $("#selectl1").val();
+    let l2 = $("#selectl2").val();
     // let period = $("#selectdataset").val();
     let period = $("input[name=periodicity]:checked").val();
     let year = app.DEFAULTS.YEAR;
@@ -658,13 +794,13 @@ app.createHelpers = function(){
     // let indices = $("#selectindices").val().join(',');
     app.URLparams = {
       'c':l0,
-      'd':l1,
+      'd':l2,
       'p':period,
       'y':year,
       'i':indices,
     }
     let url = app.baseURL+"?c="+l0+
-            "&d="+l1+
+            "&d="+l2+
             "&p="+period+
             "&i="+indices;
     if (document.location.href!=url) window.history.pushState({}, 'Nepal', url);
@@ -763,8 +899,5 @@ jQuery(function($) {
   app.initializeVariables();
   app.createHelpers();
   app.initiUI();
-  //app.fetchCropCalendar();
   app.addHandlers();
-
-  // app.computeClicked();
 });

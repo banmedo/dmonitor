@@ -188,3 +188,21 @@ def getLTAStats(request):
         with open(cachefile) as f:
             data = json.load(f)
             return JsonResponse(data)
+
+'''
+Function to get seasonal aggregated percentage area_under
+'''
+def getSeasonalAggregatedRatio(request):
+    return JsonResponse({'categories':['ndvi','evap', 'temp'],\
+        'names': ['more than 1','-1 to 1','less than -1'],\
+        'series':[[50,70,70],[30,20,30],[20,10,0]]
+    })
+
+'''
+Function to get percentage of normal
+'''
+def getPercentageOfNormal(request):
+    return JsonResponse({
+        'categories':['ndvi','evap','soilMoist','tempMean'],
+        'series':[50,60,70,30]
+    })
