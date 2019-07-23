@@ -35,6 +35,11 @@ class Dmlocal(TethysAppBase):
                 controller='dmlocal.controllers.advanced'
             ),
             UrlMap(
+                name='outlook',
+                url='outlook',
+                controller='dmlocal.controllers.outlook'
+            ),
+            UrlMap(
                 name='homeBak',
                 url='old',
                 controller='dmlocal.controllers.homeBak'
@@ -75,10 +80,16 @@ class Dmlocal(TethysAppBase):
                 controller='dmlocal.api.getSeasonalAggregatedRatio'
             ),
             UrlMap(
-                name='PercentageOfNoemal',
+                name='PercentageOfNormal',
                 url='api/percentageOfNormal',
                 controller='dmlocal.api.getPercentageOfNormal'
-            )
+            ),
+
+            UrlMap(
+                name='current',
+                url='dmlocal/current',
+                controller='dmlocal.controllers.current'
+            ),
         )
 
         return url_maps

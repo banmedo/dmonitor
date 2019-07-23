@@ -40,14 +40,14 @@ mapApp.addSlider = function (args){
     position: 'bottomleft',
     min: mapApp.startDate,
     max: mapApp.endDate,
-    value: mapApp.startDate,
+    value: mapApp.endDate,
     collapsed: false,
     size: '300px',
     getValue: mapApp._formatLabel,
     increment:true,
   });
   mapApp.map.addControl(mapApp.slider);
-
+  // mapApp.slider.changeValue(mapApp.endDate);
   mapApp.animationControl = L.control({position: 'bottomleft'});
   mapApp.animationControl.onAdd = function (map) {
       let symbol = "&#9658;";
@@ -160,6 +160,18 @@ mapApp._getWMSSld = function(layername, style){
   return retText;
 };
 
+mapApp._getLegendSld = function(layername, style){
+  var selectedStyle = VISPARAMS[style];
+  var retText = '<StyledLayerDescriptor version="1.0.0"><NamedLayer><Name>'+layername+'</Name><UserStyle><FeatureTypeStyle><Rule><RasterSymbolizer><ColorMap type="ramp">';
+  for (var i = 0; i< selectedStyle.length;i++){
+    var cMap = selectedStyle[i];
+    if(cMap.opacity==0) continue;
+    retText += '<ColorMapEntry color="'+cMap.color+'" quantity="'+cMap.quantity+'" label="'+cMap.label+'" opacity="'+cMap.opacity+'"/>'
+  }
+  retText += '</ColorMap></RasterSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+  return retText;
+};
+
 mapApp.getWMSLayer = function(interval, year, timeIndex){
   var wmsURL = "http://tethys.icimod.org:8181/geoserver/wms?";
   var layername = 'saldas'+interval.toUpperCase()+":"+mapApp.selectedVariable+"_"+mapApp._getTimeString(interval,year,timeIndex);
@@ -178,9 +190,14 @@ mapApp._getSeries = function(interval, year, startDate, endDate){
   var dataSeries = [];
   for (var i = 0; i <= (endDate-startDate);i++){
     var thisTime = startDate+i;
+    var thisYear = year;
+    if (thisTime>12){
+      thisTime = thisTime-12;
+      thisYear = parseInt(thisYear)+1;
+    }
     dataSeries.push({
-      date:mapApp._getTimeString(interval, year, thisTime),
-      wmsLayer : mapApp.getWMSLayer(interval, year, thisTime)
+      date:mapApp._getTimeString(interval, thisYear, thisTime),
+      wmsLayer : mapApp.getWMSLayer(interval, thisYear, thisTime)
     });
   }
   return dataSeries;
@@ -230,11 +247,12 @@ mapApp.updateSlider = function(args){
     args.startDate = args.startDate*3 - 2;
     args.endDate = args.endDate * 3;
   }
-  args.endDate --;
+  // args.endDate --;
   mapApp.addSlider(args);
   mapApp.activeSeries = mapApp._getSeries(args.interval, args.year, args.startDate, args.endDate);
   mapApp._addWMSLayers();
-  mapApp._changeWms(mapApp.startDate);
+  mapApp._changeWms(mapApp.endDate);
+  mapApp.slider.changeValue(mapApp.endDate);
 }
 
 mapApp.sliderValueChanged = function(value){
@@ -279,12 +297,13 @@ mapApp.mapVariableChanged = function(arg){
   // }
   mapApp.activeSeries = mapApp._getSeries(mapApp.interval, mapApp.year, mapApp.startDate, mapApp.endDate);
   mapApp._addWMSLayers();
-  mapApp.slider.changeValue(mapApp.startDate);
+  mapApp.slider.changeValue(mapApp.endDate);
   if (mapApp.selectedVariable == 'none') {
     mapApp.map.removeControl(mapApp.slider);
     mapApp.map.removeControl(mapApp.animationControl);
   }else {
     mapApp.map.addControl(mapApp.slider);
+    mapApp.slider.changeValue(mapApp.endDate);
     mapApp.map.addControl(mapApp.animationControl);
   }
   mapApp.updateLegend();
@@ -356,20 +375,27 @@ mapApp.updateLegend = function(){
 mapApp.submapRefactor = function(){
   var layers = mapApp.activeLayer._layers;
   var layerIndex = Object.keys(layers)[0];
-  var polygonParts = layers[layerIndex]._parts[0];
+  var innerHTML = "";
+  var polygonParts = layers[layerIndex]._parts;
   if (polygonParts && polygonParts.length > 0){
-    var mapPaneElement = $(layers[layerIndex]._path).parent().parent().parent().parent();
-    var mapTransformString = mapPaneElement.css("transform");
-    var mapTransformArray = mapTransformString.split('(')[1].split(')')[0].split(',')
+
+    polygonParts.forEach(function(part){
+      var mapPaneElement = $(layers[layerIndex]._path).parent().parent().parent().parent();
+      var mapTransformString = mapPaneElement.css("transform");
+      var mapTransformArray = mapTransformString.split('(')[1].split(')')[0].split(',')
       .map(function(item){
         return parseInt(item);
       });
-    var offsetX = mapTransformArray[mapTransformArray.length-2];
-    var offsetY = mapTransformArray[mapTransformArray.length-1];
-    var layerVertices = polygonParts.map(function(item){
-      return (item.x+offsetX)+"px "+(item.y+offsetY)+"px";
+      var offsetX = mapTransformArray[mapTransformArray.length-2];
+      var offsetY = mapTransformArray[mapTransformArray.length-1];
+      var layerVertices = part.map(function(item){
+        return (item.x+offsetX)+","+(item.y+offsetY);
+      });
+      innerHTML += "<polygon points='"+layerVertices.join(" ")+"'/>"
     });
-    $("#top-map-container").css("clip-path","polygon("+layerVertices.join(",")+")");
+    $("#topMapClip").html(innerHTML);
+    $("#top-map-container").css("clip-path","url(#topMapClip)");
+
     $("#top-map-container").css("z-index","500");
     mapApp.topMap.flyTo(mapApp.map.getCenter(),mapApp.map.getZoom(),{animate:false,duration:0});
   }

@@ -27,6 +27,19 @@ import sys
 HOSTADDRESS = 'http://192.168.10.74:8001/'
 
 '''
+Function to get geometry for requests
+'''
+def getGeom(country, geomname):
+    base_folder = os.path.dirname(os.path.realpath(__file__))
+
+    feature_file = os.path.join(base_folder,'public','Shapes', country, geomname+".geojson")
+    with open(feature_file) as f:
+        feature = json.load(f)
+        geometry = feature["features"][0]["geometry"]
+
+    return(json.dumps(geometry))
+
+'''
 Function to get the list of geometries based on countries in the Shapes
 folder.
 '''
@@ -124,16 +137,16 @@ def getAreaUnderFromBLDAS(request):
 
         response = {}
         if (type == 'POST'):
-            response = requests.post(url,data = params, headers = {'Authorization': 'Token '+csrf} ).json()
+            response = requests.post(url,data = params, headers = {'Authorization': 'Token '+csrf} )#.json()
         else:
-            response = requests.get(url, params=params).json()
+            response = requests.get(url, params=params)#.json()
 
         # save successful response to cache
         if (params['year']!="2018") and (not 'error' in response.keys()):
             with open(cachefile, "w") as f:
                 json.dump(response, f)
-        return JsonResponse(response)
-        # return HttpResponse(response)
+        # return JsonResponse(response)
+        return HttpResponse(response)
     else:
         with open(cachefile) as f:
             data = json.load(f)
@@ -193,16 +206,96 @@ def getLTAStats(request):
 Function to get seasonal aggregated percentage area_under
 '''
 def getSeasonalAggregatedRatio(request):
-    return JsonResponse({'categories':['ndvi','evap', 'temp'],\
-        'names': ['more than 1','-1 to 1','less than -1'],\
-        'series':[[50,70,70],[30,20,30],[20,10,0]]
-    })
+
+    base_folder = os.path.dirname(os.path.realpath(__file__))
+
+    reqhash = hashlib.sha224('LTA'+request.build_absolute_uri().encode('utf-8')).hexdigest()
+    cachefile = os.path.join(base_folder,'Cache',reqhash+'.json')
+    if (os.path.exists(cachefile)):
+        with open(cachefile) as f:
+            data = json.load(f)
+            return JsonResponse(data)
+
+    # for public tethys
+    # url = 'http://tethys.icimod.org/apps/bldas-explorer/api/getMaskedPolygonStatsRangePost/'
+    url = HOSTADDRESS+'getSeasonalAggregates/'
+    csrf = '70ea40c68fa50a3d0bde25847ade8bbe56499d0a'
+    # for local
+    # url = 'http://localhost:8005/apps/bldas-explorer/api/getSeasonalAggregates/'
+    # csrf = '09124cef8ac2441386af6fb0d1cdba290069739e'
+
+    params = json.loads(request.GET.get('params'))
+
+    type = params['type']
+
+    # get geometry
+    params['geom'] = getGeom(params['country'], params['geom'])
+    params['lbp'] = -1
+    params['hbp'] = 1
+    # params['geom'] = '{"type":"Polygon","coordinates":[[[86.41083984374998,27.776656735395832],[85.70771484375,26.721832698918973],[87.50947265624998,26.721832698918973],[87.11396484374998,27.737768254316606],[86.41083984374998,27.776656735395832]]]}'
+    response = {}
+    if (type == 'POST'):
+        response = requests.post(url,data = params, headers = {'Authorization': 'Token '+csrf} ).json()
+    else:
+        response = requests.get(url, params=params).json()
+
+    # save successful response to cache
+    if (params['year']!="2018") and (not 'error' in response.keys()):
+        with open(cachefile, "w") as f:
+            json.dump(response, f)
+
+    # return HttpResponse(response)
+    return JsonResponse(response)
+
+'''
+Function to get seasonal aggregated percentage area_under
+'''
+def getPercentageOfNormal(request):
+
+    base_folder = os.path.dirname(os.path.realpath(__file__))
+
+    reqhash = hashlib.sha224('LTA'+request.build_absolute_uri().encode('utf-8')).hexdigest()
+    cachefile = os.path.join(base_folder,'Cache',reqhash+'.json')
+    if (os.path.exists(cachefile)):
+        with open(cachefile) as f:
+            data = json.load(f)
+            return JsonResponse(data)
+
+    # for public tethys
+    # url = 'http://tethys.icimod.org/apps/bldas-explorer/api/getMaskedPolygonStatsRangePost/'
+    url = HOSTADDRESS+'getPercentageOfNormal/'
+    csrf = '70ea40c68fa50a3d0bde25847ade8bbe56499d0a'
+    # for local
+    # url = 'http://localhost:8005/apps/bldas-explorer/api/getPercentageOfNormal/'
+    # csrf = '09124cef8ac2441386af6fb0d1cdba290069739e'
+
+    params = json.loads(request.GET.get('params'))
+
+    type = params['type']
+
+    # get geometry
+    params['geom'] = getGeom(params['country'], params['geom'])
+    # params['geom'] = '{"type":"Polygon","coordinates":[[[86.41083984374998,27.776656735395832],[85.70771484375,26.721832698918973],[87.50947265624998,26.721832698918973],[87.11396484374998,27.737768254316606],[86.41083984374998,27.776656735395832]]]}'
+    response = {}
+    if (type == 'POST'):
+        response = requests.post(url,data = params, headers = {'Authorization': 'Token '+csrf} ).json()
+    else:
+        response = requests.get(url, params=params).json()
+
+    # save successful response to cache
+    # if (params['year']!="2018") and (not 'error' in response.keys()):
+    #     with open(cachefile, "w") as f:
+    #         json.dump(response, f)
+
+    # return HttpResponse(response)
+    return JsonResponse(response)
 
 '''
 Function to get percentage of normal
-'''
+
 def getPercentageOfNormal(request):
     return JsonResponse({
         'categories':['ndvi','evap','soilMoist','tempMean'],
         'series':[50,60,70,30]
     })
+'''

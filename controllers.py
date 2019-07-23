@@ -85,6 +85,15 @@ def minimum(request):
     return render(request, 'dmlocal/minimum.html',context)
 
 # @login_required()
+def outlook(request):
+    context = {}
+    return render(request, 'dmlocal/forecast.html',context)
+
+# @login_required()
 def homeBak(request):
     context = {}
     return render(request, 'dmlocal/original_backup.html',context)
+
+# BIKRAM SHAKYA
+def current(request):
+    return render(request, 'dmlocal/original_backup.html')

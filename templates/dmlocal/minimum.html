@@ -95,8 +95,8 @@
 {% block app_content %}
   <div class="navilinkbar">
     <div class="navilink active"><a>Current</a></div>
-    <div class="navilink"><a href="/apps/dmlocal/historical">Historical</a></div>
-    <div class="navilink"><a>Outlook</a></div>
+    <div class="navilink"><a href="/apps/dmlocal/historical">Seasonal</a></div>
+    <div class="navilink"><a  href="/apps/dmlocal/outlook">Outlook</a></div>
   </div>
   <div class="maincomp col-lg-12" style="padding-left:4px;">
     <div class="col-sm-8" style="height:49%;padding:4px;">
@@ -118,6 +118,12 @@
       <div class = "card col-sm-12" id="chart3" style="height:100%;padding:5px;"></div>
     </div>
   </div>
+  <svg width="0" height="0">
+    <defs>
+      <clipPath id="topMapClip">
+      </clipPath>
+    </defs>
+  </svg>
 {% endblock %}
 
 {% block content_dependent_styles %}
