@@ -334,6 +334,8 @@ app.createHelpers = function(){
 
   //process request with current options
   app.computeClicked = function(e){
+    app.updateURL();
+    
     var l0 = app.URLparams.c;
     var gid = $("input[type=radio][name=level]:checked").attr('id');
     var lev = gid.substr(gid.length-2)
@@ -432,7 +434,7 @@ app.createHelpers = function(){
         if (args.graphType == 'boxplot'){
           var reqdata = result[args.graphType];
           var headers = reqdata.map(function(item, index){
-              return (new Date(item[0])).toString('yy-MMM');
+            return (new Date(item[0])).toUTCString().substring(8,16);
           });
           data = reqdata.map(function(item, index){
               return item.splice(1);
@@ -440,7 +442,7 @@ app.createHelpers = function(){
         }else{
           var reqdata = result['multiline']['mean'];
           var headers = reqdata.map(function(item, index){
-              return (new Date(item[0])).toString('yy-MMM');
+            return (new Date(item[0])).toUTCString().substring(8,16);
           });
           data = reqdata.map(function(item, index){
               return item[1];
@@ -498,7 +500,7 @@ app.initiUI = function(){
   app.topMap = L.map('top-map-container', {zoomControl: false, attributionControl:false}).setView([27, 84], 4);
   // light theme basemap
   mapApp.setTopMap(app.topMap);
-  
+
   app.map = L.map('map-container',{
       minZoom: 2,
       boxZoom: true,
