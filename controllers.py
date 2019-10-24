@@ -71,29 +71,19 @@ def home(request):
         'next_button': next_button
     }
 
-    return render(request, 'dmlocal/original.html', context)
-    # return render(request, 'dmlocal/home.html', context)
-
-# @login_required()
-def advanced(request):
-    context = {}
-    return render(request, 'dmlocal/original.html',context)
-
-# @login_required()
-def minimum(request):
-    context = {}
-    return render(request, 'dmlocal/minimum.html',context)
+    return render(request, 'dmlocal/current.html', context)
+    #return render(request, 'dmlocal/home.html', context)
 
 # @login_required()
 def outlook(request):
     context = {}
-    return render(request, 'dmlocal/forecast.html',context)
-
-# @login_required()
-def homeBak(request):
-    context = {}
-    return render(request, 'dmlocal/original_backup.html',context)
+    return render(request, 'dmlocal/future.html',context)
 
 # BIKRAM SHAKYA
 def current(request):
-    return render(request, 'dmlocal/original_backup.html')
+    context = {}
+    return render(request, 'dmlocal/current.html',context)
+
+def seasonal(request):
+    context = {}
+    return render(request, 'dmlocal/seasonal.html',context)

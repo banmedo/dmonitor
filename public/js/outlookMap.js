@@ -102,7 +102,6 @@ mapApp._getSeries = function(variable,en){
       styles: 'boxfill/undefined',
       colorscalerange: BOUNDS[variable],
   });
-  console.log(mapApp.topMap,wmsLayer);
   let timedLayer = L.timeDimension.layer.wms(wmsLayer, {
       name: 'time',
       requestTimefromCapabilities: true,
@@ -173,7 +172,7 @@ mapApp.updateLegend = function(){
       url = url + "?REQUEST=GetLegendGraphic&LAYER=" + mapApp.selectedVariable + "&PALETTE=undefined&COLORSCALERANGE=" + BOUNDS[mapApp.selectedVariable];
       url = url + "&LEGEND_OPTIONS=bgColor:0xFFFFFF"
       div.innerHTML = '<img class="legend-image" src="' + url + '" alt="legend" style="width:100%; float:right">';
-      $(div).css('background','black');
+      $(div).css('background','black').css('padding','5px').css('border-radius','5px');
       return div
   };
   mapApp.legend.addTo(mapApp.map);

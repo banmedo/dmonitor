@@ -8,22 +8,23 @@ mapApp.setMap = function(map){
 }
 
 mapApp.setTopMap = function(map){
-  map.dragging.disable();
-  map.touchZoom.disable();
-  map.doubleClickZoom.disable();
-  map.scrollWheelZoom.disable();
-  map.boxZoom.disable();
-  map.keyboard.disable();
-  if (map.tap) map.tap.disable();
-  document.getElementById('top-map-container').style.cursor='default';
-  mapApp.topMap = map;
-  mapApp.map.on('move',function(e){
-    mapApp.submapRefactor();
-  });
-  mapApp.map.on('zoomend',function(e){
-    // mapApp.submapRefactor();
-    setTimeout(function(){mapApp.submapRefactor()},100);
-  });
+  // map.dragging.disable();
+  // map.touchZoom.disable();
+  // map.doubleClickZoom.disable();
+  // map.scrollWheelZoom.disable();
+  // map.boxZoom.disable();
+  // map.keyboard.disable();
+  // if (map.tap) map.tap.disable();
+  // document.getElementById('top-map-container').style.cursor='default';
+  // mapApp.topMap = map;
+  // mapApp.map.on('move',function(e){
+  //   mapApp.submapRefactor();
+  // });
+  // mapApp.map.on('zoomend',function(e){
+  //   // mapApp.submapRefactor();
+  //   setTimeout(function(){mapApp.submapRefactor()},100);
+  // });
+  mapApp.topMap = mapApp.map;
 }
 
 mapApp.addSlider = function (args){

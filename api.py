@@ -83,6 +83,7 @@ def getJsonFromBLDAS(request):
     if (not os.path.exists(cachefile)):
         # params['geom'] = '{"type":"Polygon","coordinates":[[[86.41083984374998,27.776656735395832],[85.70771484375,26.721832698918973],[87.50947265624998,26.721832698918973],[87.11396484374998,27.737768254316606],[86.41083984374998,27.776656735395832]]]}'
         response = {}
+        return HttpResponse(response)
         if (type == 'POST'):
             response = requests.post(url,data = params, headers = {'Authorization': 'Token '+csrf} ).json()
         else:
@@ -137,16 +138,16 @@ def getAreaUnderFromBLDAS(request):
 
         response = {}
         if (type == 'POST'):
-            response = requests.post(url,data = params, headers = {'Authorization': 'Token '+csrf} )#.json()
+            response = requests.post(url,data = params, headers = {'Authorization': 'Token '+csrf} ).json()
         else:
-            response = requests.get(url, params=params)#.json()
+            response = requests.get(url, params=params).json()
 
         # save successful response to cache
         if (params['year']!="2018") and (not 'error' in response.keys()):
             with open(cachefile, "w") as f:
                 json.dump(response, f)
-        # return JsonResponse(response)
-        return HttpResponse(response)
+        return JsonResponse(response)
+        # return HttpResponse(response)
     else:
         with open(cachefile) as f:
             data = json.load(f)
@@ -283,9 +284,9 @@ def getPercentageOfNormal(request):
         response = requests.get(url, params=params).json()
 
     # save successful response to cache
-    # if (params['year']!="2018") and (not 'error' in response.keys()):
-    #     with open(cachefile, "w") as f:
-    #         json.dump(response, f)
+    if (params['year']!="2018") and (not 'error' in response.keys()):
+        with open(cachefile, "w") as f:
+            json.dump(response, f)
 
     # return HttpResponse(response)
     return JsonResponse(response)

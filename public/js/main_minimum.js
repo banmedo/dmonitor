@@ -14,8 +14,11 @@ app.createConstants = function(){
     COUN: 'Nepal',
     DIST: {
       'Nepal': 'l2Jumla',
-      'Afghanistan': 'l2Badakhshan',
-      'Bangladesh': 'l2Dhaka'
+      'Afghanistan': 'l2Ab_Band',
+      'Afghanistan(Rangeland)': 'l2Ab_Band',
+      'Bangladesh': 'l2Dhaka',
+      'Pakistan':'l2Islamabad',
+      'Pakistan(Rangeland)':'l2Islamabad'
     },
     PERIOD: 'mm',
     YEAR: '2018',
@@ -161,7 +164,7 @@ app.createHelpers = function(){
     return chart;
   }
   app.addGraphOnDiv = function(divID, ref, options){
-    let titleHTML = '<div class=panel-heading style=height:20px title="'+TOOLTIPS[ref]+'">'+options.chartTitle+'</div>';
+    let titleHTML = '<div class=panel-heading style="height:20px;padding:0px 10px;background:rgba(0,0,0,0);color:black" title="'+TOOLTIPS[ref]+'">'+options.chartTitle+'</div>';
     let chartHTML = '<div id='+divID+'child style="height:calc(100% - 20px);width:100%"></div>';
     $("#"+divID).html(titleHTML+chartHTML);
     // $("#"+divID+" .panel-heading").tooltip({placement:'bottom'});
@@ -178,6 +181,14 @@ app.createHelpers = function(){
     var options = {//chart: {type: chartType},
       chartTitle: data['title'],
       title: {text: null},
+      chart: {
+        backgroundColor: 'rgba(255,255,255,0)',
+        style: { "fontFamily": "Lato,\"Lucida Grande\", \"Lucida Sans Unicode\", Verdana, Arial, Helvetica, sans-serif", "fontSize": "10px" },
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false
+      },
+      credits:{enabled:false},
       legend: {enabled:false},
       xAxis: {categories: []},
       tooltip: {pointFormat: "Value: {point.y:.4f}"},
@@ -236,12 +247,12 @@ app.createHelpers = function(){
         // resp = resp.map(function(val){return val.substr(2)});
         var options = '';
         for (var i =0; i< l1names.length; i++){
-          options += '<option value="'+l1names[i]+'">'+l1names[i]+'</option>'
+          options += '<option value="'+l1names[i]+'">'+l1names[i].replace("_"," ")+'</option>'
         }
         $("#selectl1").html(options).val(l1names[0]);
         var options = '';
         for (var i =0; i< l2names.length; i++){
-          options += '<option value="'+l2names[i]+'">'+l2names[i]+'</option>'
+          options += '<option value="'+l2names[i]+'">'+l2names[i].replace("_"," ")+'</option>'
         }
         $("#selectl2").html(options).val(l2names[0]);
         let geom = app.URLparams.d;
@@ -650,17 +661,17 @@ app.createHelpers = function(){
               if  (interval == 'dd'){
                 var dt = new Date(item[0]);
                 if (dt.getDate()<=10){
-                  return dt.toString('yy-MMM-D1')
+                  return dt.toString('yyyy-MMM-D1')
                 }else if (dt.getDate()<=20){
-                  return dt.toString('yy-MMM-D2')
+                  return dt.toString('yyyy-MMM-D2')
                 }else{
-                  return dt.toString('yy-MMM-D3')
+                  return dt.toString('yyyy-MMM-D3')
                 }
               }else if (interval == 'mm'){
-                return (new Date(item[0])).toString('yy-MMM');
+                return (new Date(item[0])).toString('yyyy-MMM');
               }else {
                 var dt = new Date(item[0]);
-                var str = dt.toString('yy-');
+                var str = dt.toString('yyyy-');
                 str += dt.toString('MMM')[0];
                 dt.setDate(1);
                 dt.setMonth(dt.getMonth()+1);
@@ -683,7 +694,7 @@ app.createHelpers = function(){
               color:color[currentVar],
               yLabels: yLabels,
               ref:ref,
-              title:title+" <span class = periodicity >"+args['geometry']+" | "+period_name+"</span>"});
+              title:title});//+" <span class = periodicity >"+args['geometry']+" | "+period_name+"</span>"});
             else app.addSeries(currentChart, {
               headers: headers,
               data: data,
@@ -739,13 +750,19 @@ app.createHelpers = function(){
           }
           series.push({
             name:response.names[j],
-            data:dseries
+            data:dseries,
+            color:AGGCOLORS[response.names[j]]
           });
         }
-        console.log(series)
+        // console.log(series)
         var options = {
           chartTitle: args.title,
-          chart: {type: 'column'},
+          chart: {type: 'column',
+            backgroundColor: 'rgba(255,255,255,0)',
+            style: { "fontFamily": "Lato,\"Lucida Grande\", \"Lucida Sans Unicode\", Verdana, Arial, Helvetica, sans-serif", "fontSize": "10px" },
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false},
           title: {text: null},
           xAxis: {categories: response.categories},
           yAxis: {
@@ -777,7 +794,7 @@ app.createHelpers = function(){
                   stacking: 'normal',
                   dataLabels: {
                       enabled: true,
-                      color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                      color:  'white'
                   }
               }
           },
@@ -815,7 +832,12 @@ app.createHelpers = function(){
         response.series = response.series.map(function(num){return Math.round(num*100)/100;});
         var options = {
           chartTitle: args.title,
-          chart: {polar:true, type:'line'},
+          chart: {polar:true, type:'line',
+            backgroundColor: 'rgba(255,255,255,0)',
+            style: { "fontFamily": "Lato,\"Lucida Grande\", \"Lucida Sans Unicode\", Verdana, Arial, Helvetica, sans-serif", "fontSize": "10px" },
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false},
           title: {text: null},
           xAxis: {categories: response.categories,tickmarkPlacement: 'on'},
           yAxis: {min: 0,max: 200,title: null,lineWidth: 0,gridLineInterpolation: 'polygon'},
@@ -975,4 +997,8 @@ jQuery(function($) {
   app.createHelpers();
   app.initiUI();
   app.addHandlers();
+  $(".app-title").append("- "+app.URLparams.c);
+  $("#curlink").prop('href',$("#curlink").prop('href')+"/?c="+app.URLparams.c);
+  $("#sealink").prop('href',$("#sealink").prop('href')+"/?c="+app.URLparams.c);
+  $("#outlink").prop('href',$("#outlink").prop('href')+"/?c="+app.URLparams.c);
 });

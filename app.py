@@ -27,22 +27,17 @@ class Dmlocal(TethysAppBase):
             UrlMap(
                 name='home',
                 url='dmlocal',
-                controller='dmlocal.controllers.minimum'
+                controller='dmlocal.controllers.home'
             ),
             UrlMap(
                 name='addvanced',
-                url='historical',
-                controller='dmlocal.controllers.advanced'
+                url='seasonal',
+                controller='dmlocal.controllers.seasonal'
             ),
             UrlMap(
                 name='outlook',
                 url='outlook',
                 controller='dmlocal.controllers.outlook'
-            ),
-            UrlMap(
-                name='homeBak',
-                url='old',
-                controller='dmlocal.controllers.homeBak'
             ),
             UrlMap(
                 name='geomList',
@@ -59,11 +54,11 @@ class Dmlocal(TethysAppBase):
             #     url='api/getJsonFromAPIExt',
             #     controller='dmlocal.api.getJsonFromBLDAS_External'
             # ),
-            UrlMap(
-                name='AreaUnder',
-                url='api/getAreaUnder',
-                controller='dmlocal.api.getAreaUnderFromBLDAS'
-            ),
+            # UrlMap(
+            #     name='AreaUnder',
+            #     url='api/getAreaUnder',
+            #     controller='dmlocal.api.getAreaUnderFromBLDAS'
+            # ),
             # UrlMap(
             #     name='geomList',
             #     url='api/getAreaUnderExt',
@@ -85,11 +80,6 @@ class Dmlocal(TethysAppBase):
                 controller='dmlocal.api.getPercentageOfNormal'
             ),
 
-            UrlMap(
-                name='current',
-                url='dmlocal/current',
-                controller='dmlocal.controllers.current'
-            ),
-        )
 
+        )
         return url_maps

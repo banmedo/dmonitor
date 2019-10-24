@@ -16,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Django" />
 
-    <title class="app-title">National agricultural drought watch </title>
+    <title>Drought Monitor Local</title>
 
 
     <link rel="shortcut icon" href="tethys_portal/images/favicon.jpg" />
@@ -42,27 +42,32 @@
                 <!--<div class="logos pull-left">
                     <img src="Content/images/Servir_HKH green1.png" style="padding-top:3px;padding-left: 10px;height:35px;width:auto;margin-top:10px;"/>
                 </div>-->
-                <h3 class="banner-heading app-title">National agricultural drought watch </h3>
+                <h3 class="banner-heading">Drought Monitor Local</h3>
                 <!--<div class="logos pull-left">
                 </div>-->
 
                 <div class="logos pull-right">
                     <!--<img src="~/Content/images/afghanistanemblem.png" />
                     <img src="~/Content/images/Afghanistan_MoEW1.png" />-->
-                    <img src="http://tethys.icimod.org/static/sldasdataforecast/icons/logo-icimod.png" style="height: 35px;margin-top: 10px;" />
+                    <img src="{% static 'saldasforecast/icons/logo-icimod.png' %}" style="height: 35px;margin-top: 10px;" />
                 </div>
             </div>
+
         <div class="toolbar">
             <div>
-                <a href="/apps/dmlocal" type="button" class="btn btn-sm toolbtn-custom active" id="curlink">Current</a>
-                <a href="/apps/dmlocal/seasonal" type="button" class="btn btn-sm toolbtn-custom" id="sealink">Seasonal</a>
-                <a href="/apps/dmlocal/outlook" type="button" class="btn btn-sm toolbtn-custom" id="outlink">Outlook</a>
+                <a href="/apps/dmlocal/current" type="button" class="btn btn-sm toolbtn-custom ">Current</a>
+                <a href="/apps/dmlocal/seasonal" type="button" class="btn btn-sm toolbtn-custom active">Seasonal</a>
+                <a href="/apps/dmlocal/future" type="button" class="btn btn-sm toolbtn-custom ">Outlook</a>
             </div>
         </div>
+
         <div class="container-fluid main-container has-toolbar">
+
+
             <div class="row full-height">
                 <!--LEFT-->
                 <div class="col-md-2 full-height">
+
                     <!--LEFT TOP-->
                     <div class="row top-row">
                         <div class="col-md-12 colpad padtop">
@@ -92,6 +97,7 @@
                                                 </div>
 
                                         </div>
+
                                         <div id = "basins" class="form-group " >
                                               <div class="radio">
                                                     <label class="control-label col-md-12" style="padding-right:0;">
@@ -100,29 +106,53 @@
                                                         <select id="selectl2" name="selectl2" class="form-control" style="margin-top:5px"></select>
                                                     </label>
                                                 </div>
+
                                         </div>
-                                        <!-- <div id = "basins" class="form-group col-md-6" style="padding:0 5px 0 0;margin-top:8px;">
+
+
+                                        <!--<div id = "basins" class="form-group ">-->
+                                              <!--<label class="control-label" for="selectyear">Sowing Year</label>-->
+                                              <!--<select id="selectyear" name="selectyear" class="form-control">-->
+                                                <!--<option value="2019">2019</option>-->
+                                                <!--<option value="2018" selected="selected">2018</option>-->
+                                                <!--<option value="2017">2017</option>-->
+                                                <!--<option value="2016">2016</option>-->
+                                                <!--<option value="2015">2015</option>-->
+                                                <!--<option value="2014">2014</option>-->
+                                                <!--<option value="2013">2013</option>-->
+                                                <!--<option value="2012">2012</option>-->
+                                                <!--<option value="2011">2011</option>-->
+                                                <!--<option value="2010">2010</option>-->
+                                                <!--<option value="2009">2009</option>-->
+                                                <!--<option value="2008">2008</option>-->
+                                                <!--<option value="2007">2007</option>-->
+                                                <!--<option value="2006">2006</option>-->
+                                                <!--<option value="2005">2005</option>-->
+                                                <!--<option value="2004">2004</option>-->
+                                                <!--<option value="2003">2003</option>-->
+                                                <!--<option value="2002">2002</option>-->
+                                                <!--<option value="2001">2001</option>-->
+                                              <!--</select>-->
+                                        <!--</div>-->
+
+                                        <div id = "basins" class="form-group col-md-6" style="padding:0 5px 0 0;margin-top:8px;">
                                               <label class="control-label" for="startDate">From Date</label>
                                               <input id="startDate" name="startDate" class="datepicker form-control" placeholder="Start Date">
                                         </div>
                                         <div id = "basins" class="form-group col-md-6" style="padding:0 0 0 5px;margin-top:8px;">
                                               <label class="control-label" for="endDate">To Date</label>
                                               <input id="endDate" name="endDate" class="datepicker form-control" placeholder="End Date">
-                                        </div> -->
-                                        <label class="control-label">Select Periodicity</label>
-                                        <div class="form-group">
-                                          <div class="col-sm-12">
-                                            <div class="radio">
-                                              <label><input type="radio" name="periodicity" value="dd" checked>Dekad (10 Days)</label>
-                                            </div>
-                                            <div class="radio">
-                                              <label><input type="radio" name="periodicity" value="mm">1 Month</label>
-                                            </div>
-                                            <div class="radio">
-                                              <label><input type="radio" name="periodicity" value="3m">3 Months</label>
-                                            </div>
-                                          </div>
                                         </div>
+
+                                        <div id = "basins" class="form-group">
+                                              <label class="control-label" for="periodicity">Periodicity</label>
+                                              <select id="periodicity" class="form-control" name="basin" >
+                                                    <option value="dd">Dekad (10 Days)</option>
+                                                    <option value="mm">1 Month</option>
+                                                    <option value="3m">3 Months</option>
+                                              </select>
+                                        </div>
+
                                         <div id = "indices" class="form-group">
                                               <label class="control-label">Select 4 Indices</label>
                                               <select id="selectindex1" class="bound-dropdown form-control" style="margin-bottom:6px;"></select>
@@ -130,12 +160,14 @@
                                               <select id="selectindex3" class="bound-dropdown form-control" style="margin-bottom:6px;"></select>
                                               <select id="selectindex4" class="bound-dropdown form-control" ></select>
                                         </div>
+
                                         <div class="clearfix"></div>
                                         <div class="form-group">
                                             <a class="btn btn-custom btn-block" role="button" onclick="app.computeClicked(event)">Compute Indices</a>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -144,16 +176,22 @@
                     <div class="row bot-row">
                         <div class="col-md-12 colpad padtop padbottom col-mob-off">
                             <div class="panel " style="height:100%">
-                                <div class="panel-heading">
+                                 <div class="panel-heading">
                                     <h4 class="panel-title">
                                         About
                                     </h4>
                                 </div>
                                 <div class="panel-body">
                                     <p style="text-align:justify;font-size:12px;">
-                                      ICIMOD is developing an integrated information platform linking weather and climate data with agriculture practices in the region. The platform provides data analysis support to professionals responsible for developing agro-met advisories for government agencies and ...
+                                        The International Centre for Integrated Mountain Development (ICIMOD) under its SERVIR Hindu Kush Himalaya (SERVIR-HKH) and Climate Services for Resilient
+                                        Development (CSRD) initiatives is collaborating with John Hopkins University to establish an agricultural drought monitoring and early warning system for
+                                        the Hindukush Himalayan Region. The system incorporates climatic and land surface models with assimilation of suitable earth observation datasets to
+                                        produce drought monitoring and warning information.
                                     </p>
-                                    <a data-toggle="modal" href="#aboutModal"><b>View More ...</b></a>
+
+                                    <p style="text-align:justify;font-size:12px">
+                                        The infographics presented in the information system accounts for the crop distributions crop calendars
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -162,35 +200,60 @@
                 </div>
 
                <div class="col-md-10 full-height">
+
+
                     <div id="map-section" class="row top-row" style="position:relative;">
+
+
                         <div class="col-md-8 full colpad padtop pull-div">
                             <div class="panel" style="height:100%;padding:10px;">
-                                <div id="mapDiv" style="height:100%;position:relative; padding:0; margin:0; overflow:hidden;">
+                                <div id="mapDiv">
                                     <div class="card map-container" id="map-container" style="width:100%;height:100%;"></div>
+                                    <!--<div class="btn-float shadow-all" onclick="maximizeTopPanel(this,'map-section','chart-section')" style="right:8px;bottom:8px;z-index:9999;">-->
+                                        <!--<i class="glyphicon glyphicon-chevron-down"></i>-->
+                                    <!--</div>-->
+
+                                    <!--<div id="maplegend"> </div>-->
                                     <div class="card map-container" id="top-map-container"></div>
+
+
+
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-4 full-height colpad padtop no-pull-div">
-                            <div class="panel" style="height:100%;">
-                                <div id="chart0" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                            <div class="panel" style="height:100%;padding:10px;">
+                                <div id="chart0" class="panel-body" style="height:100%;overflow:hidden;padding:0 10px;"></div>
                             </div>
                         </div>
+
                     </div>
+
+
+
                     <div id="chart-section" class="row bot-row">
                         <div class="col-md-4 colpad padtop padbottom" style="padding-left:0;">
                             <div class="panel " style="height:100%">
-                                <div id="chart1" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart1" class="panel-body" style="height:100%;overflow:hidden;padding:0 10px;"></div>
+
+
                             </div>
                         </div>
+
                         <div class="col-md-4  colpad padtop padbottom">
                             <div class="panel " style="height:100%">
-                                <div id="chart2" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart2" class="panel-body" style="height:100%;overflow:hidden;padding:0 10px;"></div>
+
+
                             </div>
                         </div>
+
                         <div class="col-md-4 colpad padtop padbottom">
                             <div class="panel " style="height:100%">
-                                <div id="chart3" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart3" class="panel-body" style="height:100%;overflow:hidden;padding:0 10px;"></div>
+
+
                             </div>
                         </div>
                     </div>
@@ -198,6 +261,8 @@
 
             </div>
         </div>
+
+
         <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -209,27 +274,27 @@
                     </div>
                     <div class="modal-body">
                         <div class="contributor">
-                          <img src="http://tethys.icimod.org/static/sldasdataforecast/images/USAIDlogo.png"/>
-                          <img src="http://tethys.icimod.org/static/sldasdataforecast/images/NASA_LOGO.png" style="height:50px;" />
-                          <img src="http://tethys.icimod.org/static/sldasdataforecast/images/icimod.png" style="height:30px;margin-top:10px;" />
-                          <img src="http://tethys.icimod.org/static/sldasdataforecast/images/Servir_HKH green.png" style="height:30px;" />
-                            <!-- @*<img src="{% static 'dmlocal/js/jquery-2.2.0.js' %}" style="height:50px;" />*@
-                            <img src="{% static 'dmlocal/js/jquery-2.2.0.js' %}" style="height:30px;margin-top:10px;" />
-                            @*<img src="{% static 'dmlocal/js/jquery-2.2.0.js' %}" style="height:30px;" />*@ -->
+                            <img src="~/Content/images/ausaid.jpg" style="height:50px;" />
+                            @*<img src="~/Content/images/NASA_LOGO.png" style="height:50px;" />*@
+                            <img src="~/Content/images/icimod.png" style="height:30px;margin-top:10px;" />
+                            @*<img src="~/Content/images/Servir_HKH green.png" style="height:30px;" />*@
                         </div>
 
                         <div>
-                          <p style="text-align:justify;font-size:12px;">
-                            ICIMOD is developing an integrated information platform linking weather and climate data with agriculture practices in the region. The platform provides data analysis support to professionals responsible for developing agro-met advisories for government agencies and farmers. The web-based service on the National agricultural drought watch System developed at ICIMOD under the SERVIR Hindu Kush Himalaya (SERVIR-HKH) Initiative provides information on the in-season drought situation and outlook.
-                          </p>
-                          <p style="text-align:justify;font-size:12px;">
-                            National agricultural drought watch System for South Asia provides baselines on crop type maps and farming practices calendars valid at the district level, and multiple indices – evapotranspiration, precipitation rate, standardized precipitation index, soil moisture, and temperature – for droughts and seasonal weather outlooks at the national and regional levels. These can inform short- to medium-term agro-advisories. Users can already explore historical time-series data on the five indices over 18 years aggregated in decadal, monthly, and quarterly sets. The system will soon roll out three- to six-month forecast abilities.
-                          </p>
 
-                          <p style="text-align:justify;font-size:12px">
-                              <b>Acknowledgements:</b> Development of the Regional Drought Monitoring and Outlook System for South Asia was supported by the United States Agency for International Development (USAID) and the National Aeronautics and Space Administration (NASA). The Climate Services for Resilient Development (CSRD) Initiative and the International Maize and Wheat Improvement Center (CIMMYT) collaborated on the development of the system.
-                          </p>
+                            <p style="text-align:justify">
+                                Landslide inventory is polygon of every landslide for landslide characterization and analsysis to understand landslide distribution pattern, and identify areas susceptible to landslide events in future. This is important for proper consideration of landuse codes for planning developmental activities.
+
+
+
+
+                            </p>
+
+
                         </div>
+
+
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-custom btn-sm" data-dismiss="modal">Close</button>
@@ -237,12 +302,7 @@
                 </div>
             </div>
         </div>
-        <svg width="0" height="0">
-          <defs>
-            <clipPath id="topMapClip">
-            </clipPath>
-          </defs>
-        </svg>
+
 
 {% block content_dependent_styles %}
 
@@ -331,7 +391,7 @@
   <script src="{% static 'dmlocal/js/VisParams.js' %}"></script>
 
   <script src="{% static 'dmlocal/js/MapFunctions.js' %}"></script>
-  <script src="{% static 'dmlocal/js/main_minimum.js' %}"></script>
+  <script src="{% static 'dmlocal/js/main_Current.js' %}"></script>
 {% endblock %}
 
 

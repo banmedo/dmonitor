@@ -49,14 +49,14 @@
                 <div class="logos pull-right">
                     <!--<img src="~/Content/images/afghanistanemblem.png" />
                     <img src="~/Content/images/Afghanistan_MoEW1.png" />-->
-                    <img src="http://tethys.icimod.org/static/sldasdataforecast/icons/logo-icimod.png" style="height: 35px;margin-top: 10px;" />
+                    <img src="{% static 'saldasforecast/icons/logo-icimod.png' %}" style="height: 35px;margin-top: 10px;" />
                 </div>
             </div>
         <div class="toolbar">
             <div>
-                <a href="/apps/dmlocal" type="button" class="btn btn-sm toolbtn-custom active" id="curlink">Current</a>
-                <a href="/apps/dmlocal/seasonal" type="button" class="btn btn-sm toolbtn-custom" id="sealink">Seasonal</a>
-                <a href="/apps/dmlocal/outlook" type="button" class="btn btn-sm toolbtn-custom" id="outlink">Outlook</a>
+              <a href="/apps/dmlocal" type="button" class="btn btn-sm toolbtn-custom" id="curlink">Current</a>
+              <a href="/apps/dmlocal/seasonal" type="button" class="btn btn-sm toolbtn-custom active" id="sealink">Seasonal</a>
+              <a href="/apps/dmlocal/outlook" type="button" class="btn btn-sm toolbtn-custom" id="outlink">Outlook</a>
             </div>
         </div>
         <div class="container-fluid main-container has-toolbar">
@@ -101,6 +101,53 @@
                                                     </label>
                                                 </div>
                                         </div>
+                                        <label class="control-label" for="startDate">Select Sowing Year</label>
+                                        <div class="form-group">
+                                          <div class="col-sm-12">
+                                            <select id="selectyear" name="selectyear" class="form-control">
+                                              <option value="2019">2019</option>
+                                              <option value="2018" selected="selected">2018</option>
+                                              <option value="2017">2017</option>
+                                              <option value="2016">2016</option>
+                                              <option value="2015">2015</option>
+                                              <option value="2014">2014</option>
+                                              <option value="2013">2013</option>
+                                              <option value="2012">2012</option>
+                                              <option value="2011">2011</option>
+                                              <option value="2010">2010</option>
+                                              <option value="2009">2009</option>
+                                              <option value="2008">2008</option>
+                                              <option value="2007">2007</option>
+                                              <option value="2006">2006</option>
+                                              <option value="2005">2005</option>
+                                              <option value="2004">2004</option>
+                                              <option value="2003">2003</option>
+                                              <option value="2002">2002</option>
+                                              <option value="2001">2001</option>
+                                            </select>
+                                          </div>
+                                        </div>
+                                        <label class="control-label" for="startDate">Select Date Range</label>
+                                        <div id = "basins" class="form-group col-md-6" style="padding:0 5px 0 0;margin-top:8px;">
+                                              <input id="startDate" name="startDate" class="datepicker form-control" placeholder="Start Date">
+                                        </div>
+                                        <div id = "basins" class="form-group col-md-6" style="padding:0 0 0 5px;margin-top:8px;">
+                                              <input id="endDate" name="endDate" class="datepicker form-control" placeholder="End Date">
+                                        </div>
+                                        <!-- <div class="form-group">
+                                          <div class="col-sm-6">
+                                            <input id="startDate" name="startDate" class="datepicker form-control" placeholder="Start Date">
+                                          </div>
+                                          <div class="col-sm-6">
+                                            <input id="endDate" name="endDate" class="datepicker form-control" placeholder="End Date">
+                                          </div>
+                                        </div>
+                                        <div class="form-group hidden">
+                                          <div class="col-sm-12">
+                                            <select id="selectcrop" name="selectcrop" class="form-control">
+                                            </select>
+                                          </div>
+                                        </div> -->
                                         <!-- <div id = "basins" class="form-group col-md-6" style="padding:0 5px 0 0;margin-top:8px;">
                                               <label class="control-label" for="startDate">From Date</label>
                                               <input id="startDate" name="startDate" class="datepicker form-control" placeholder="Start Date">
@@ -144,17 +191,17 @@
                     <div class="row bot-row">
                         <div class="col-md-12 colpad padtop padbottom col-mob-off">
                             <div class="panel " style="height:100%">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        About
-                                    </h4>
-                                </div>
-                                <div class="panel-body">
-                                    <p style="text-align:justify;font-size:12px;">
-                                      ICIMOD is developing an integrated information platform linking weather and climate data with agriculture practices in the region. The platform provides data analysis support to professionals responsible for developing agro-met advisories for government agencies and ...
-                                    </p>
-                                    <a data-toggle="modal" href="#aboutModal"><b>View More ...</b></a>
-                                </div>
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      About
+                                  </h4>
+                              </div>
+                              <div class="panel-body">
+                                  <p style="text-align:justify;font-size:12px;">
+                                    ICIMOD is developing an integrated information platform linking weather and climate data with agriculture practices in the region. The platform provides data analysis support to professionals responsible for developing agro-met advisories for government agencies and ...
+                                  </p>
+                                  <a data-toggle="modal" href="#aboutModal"><b>View More ...</b></a>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -165,7 +212,7 @@
                     <div id="map-section" class="row top-row" style="position:relative;">
                         <div class="col-md-8 full colpad padtop pull-div">
                             <div class="panel" style="height:100%;padding:10px;">
-                                <div id="mapDiv" style="height:100%;position:relative; padding:0; margin:0; overflow:hidden;">
+                                <div id="mapDiv">
                                     <div class="card map-container" id="map-container" style="width:100%;height:100%;"></div>
                                     <div class="card map-container" id="top-map-container"></div>
                                 </div>
@@ -173,24 +220,24 @@
                         </div>
                         <div class="col-md-4 full-height colpad padtop no-pull-div">
                             <div class="panel" style="height:100%;">
-                                <div id="chart0" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart0" class="panel-body" style="height:100%;overflow:hidden;padding:5px 5px;"></div>
                             </div>
                         </div>
                     </div>
                     <div id="chart-section" class="row bot-row">
                         <div class="col-md-4 colpad padtop padbottom" style="padding-left:0;">
                             <div class="panel " style="height:100%">
-                                <div id="chart1" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart1" class="panel-body" style="height:100%;overflow:hidden;padding:5px 5px;"></div>
                             </div>
                         </div>
                         <div class="col-md-4  colpad padtop padbottom">
                             <div class="panel " style="height:100%">
-                                <div id="chart2" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart2" class="panel-body" style="height:100%;overflow:hidden;padding:5px 5px;"></div>
                             </div>
                         </div>
                         <div class="col-md-4 colpad padtop padbottom">
                             <div class="panel " style="height:100%">
-                                <div id="chart3" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart3" class="panel-body" style="height:100%;overflow:hidden;padding:5px 5px;"></div>
                             </div>
                         </div>
                     </div>
@@ -331,7 +378,7 @@
   <script src="{% static 'dmlocal/js/VisParams.js' %}"></script>
 
   <script src="{% static 'dmlocal/js/MapFunctions.js' %}"></script>
-  <script src="{% static 'dmlocal/js/main_minimum.js' %}"></script>
+  <script src="{% static 'dmlocal/js/main.js' %}"></script>
 {% endblock %}
 
 

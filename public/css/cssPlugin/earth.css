@@ -1,0 +1,40 @@
+﻿
+body {
+    color: #333;
+    background-color: rgb(194,173,159);
+}
+
+.banner {
+    background-color: rgb(164,132,111);
+    color: #333;
+}
+
+.panel-heading, .modal-header, .toolbar {
+    color: white;
+    background-color: rgb(110,54,42);
+}
+
+.btn-custom, .btn-float {
+    background-color: rgb(164,132,111);
+    color: white !important;
+}
+
+.toolbtn-custom:active, .toolbtn-custom.active, .toolbtn-custom:hover {
+    background-color: rgb(194,173,159);
+    border-color: transparent;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+    background: rgb(164,132,111);
+    border: 1px solid rgb(164,132,111);
+}
+
+.listview-2.active, .listview-2.active:hover {
+    background-color: rgb(164,132,111);
+    color: white;
+}
+
+.listview-2:hover {
+    background-color: rgb(194,173,159);
+    color: white;
+}

@@ -121,3 +121,13 @@ var TOOLTIPS = {
   "seasonAgg":"Area under seasonally aggregated anomalies",
   "seasonAgg":"Percentage of normal equating to current value "
 }
+
+var AGGCOLORS = {
+  "more than 2":"#5448ff",
+  "1.5 to 2":"#7985ed",
+  "1 to 1.5":"#9ec2db",
+  "-1 to 1":"#c3ffc9",
+  "-1.5 to -1":"#d7ab87",
+  "-2 to -1.5":"#eb5644",
+  "less than -2":"#ff0202"
+}

@@ -19,15 +19,19 @@ var app = {};
 
 app.createConstants = function(){
   app.API = {
-    TSAPI : '/apps/saldasforecast/ajax/timeseriesplot/',
+    TSAPI : 'http://tethys.icimod.org/apps/sldasdataforecast/ajax/getspatialaverage/',
+    // TSAPI : '/apps/sldasdataforecast/ajax/getspatialaverage/',
     GEOMSAPI : '/apps/dmlocal/api/getGeomList/'
   }
   app.DEFAULTS = {
     COUN: 'Nepal',
     DIST: {
       'Nepal': 'l2Jumla',
-      'Afghanistan': 'l2Badakhshan',
-      'Bangladesh': 'l2Dhaka'
+      'Afghanistan': 'l2Ab_Band',
+      'Afghanistan(Rangeland)': 'l2Ab_Band',
+      'Bangladesh': 'l2Dhaka',
+      'Pakistan':'l2Islamabad',
+      'Pakistan(Rangeland)':'l2Islamabad'
     },
     PERIOD: 'mm',
     YEAR: '2018',
@@ -99,6 +103,7 @@ app.parseParameters = function(){
     app.URLparams['e'] = defaultEnsemble;
     flagChangeURL = true;
   }
+  $('#selectl0').text(app.URLparams['c']);
   if (flagChangeURL) window.history.replaceState({}, 'Nepal', url);
 
   // $("#selecten").val(app.URLparams['e']);
@@ -153,7 +158,7 @@ app.createHelpers = function(){
     return chart;
   }
   app.addGraphOnDiv = function(divID, ref, options){
-    let titleHTML = '<div class=panel-heading style=height:20px title="'+TOOLTIPS[ref]+'">'+options.chartTitle+'</div>';
+    let titleHTML = '<div class=panel-heading style="height:20px;padding:0px 10px;background:rgba(255,255,255,0);color:black" title="'+TOOLTIPS[ref]+'">'+options.chartTitle+'</div>';
     let chartHTML = '<div id='+divID+'child style="height:calc(100% - 20px);width:100%"></div>';
     $("#"+divID).html(titleHTML+chartHTML);
     // $("#"+divID+" .panel-heading").tooltip({placement:'bottom'});
@@ -169,6 +174,13 @@ app.createHelpers = function(){
     if (data.yLabels){ y0 = data.yLabels[0], y1 = data.yLabels[1];}
     var options = {//chart: {type: chartType},
       chartTitle: data['title'],
+      chart: {
+        backgroundColor: 'rgba(255,255,255,0)',
+        style: { "fontFamily": "Lato,\"Lucida Grande\", \"Lucida Sans Unicode\", Verdana, Arial, Helvetica, sans-serif", "fontSize": "10px" },
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false
+      },
       title: {text: null},
       legend: {enabled:false},
       xAxis: {categories: []},
@@ -335,12 +347,11 @@ app.createHelpers = function(){
   //process request with current options
   app.computeClicked = function(e){
     app.updateURL();
-    
+
     var l0 = app.URLparams.c;
     var gid = $("input[type=radio][name=level]:checked").attr('id');
     var lev = gid.substr(gid.length-2)
     var geom = lev+$("#select"+lev).val();
-
     var ensemble = $("#selecten").val()
     var plotType = (ensemble == "mean"?"boxplot":"line")
     ensemble = "_"+ensemble+".ncml";
@@ -368,7 +379,7 @@ app.createHelpers = function(){
       var defaults = {
         url: app.API.TSAPI,
         country: l0,
-        geometry: geom,
+        geometry: app.URLparams.c+geom,
         animinterval: 'monthly',
         ensemble: ensemble,
         metric: ['mean'],
@@ -416,39 +427,45 @@ app.createHelpers = function(){
 
   app.getOutlookGraph = function(args){
     var reqparams = {
-      coords:[79.630498,28.155395],
+      // coords:[79.630498,28.155395],
       variable:args.variable,
       anominterval:"monthly",
-      ensemble:args.ensemble
+      ensemble:args.ensemble,
+      distnum:args.geometry,
+      shapefile:"true"
     };
     // var reqparams  = {coords:[79.630498,28.155395],variable:"Tair_f_tavg",anominterval:"monthly",ensemble:"_mean.ncml"};
     // args.graphType = 'singleline';
     $.ajax({
-      url: '/apps/saldasforecast/ajax/timeseriesplot/',
+      url: app.API.TSAPI,
       data: JSON.stringify(reqparams),
       dataType: 'json',
       contentType: "application/json",
       method: 'POST',
       success: function (result) {
-        var data = [];
-        if (args.graphType == 'boxplot'){
-          var reqdata = result[args.graphType];
-          var headers = reqdata.map(function(item, index){
-            return (new Date(item[0])).toUTCString().substring(8,16);
-          });
-          data = reqdata.map(function(item, index){
-              return item.splice(1);
-          });
-        }else{
-          var reqdata = result['multiline']['mean'];
-          var headers = reqdata.map(function(item, index){
-            return (new Date(item[0])).toUTCString().substring(8,16);
-          });
-          data = reqdata.map(function(item, index){
-              return item[1];
-          });
-        }
-        console.log(result,reqdata,data,headers);
+        // console.log(result);
+        var headers = result.values.map(function(element){
+          return (new Date(element[0])).toUTCString().substring(8,16);
+        });
+        var data = result.values.map(function(element){return element[1]});
+        // var data = [];
+        // if (args.graphType == 'boxplot'){
+        //   var reqdata = result[args.graphType];
+        //   var headers = reqdata.map(function(item, index){
+        //     return (new Date(item[0])).toUTCString().substring(8,16);
+        //   });
+        //   data = reqdata.map(function(item, index){
+        //       return item.splice(1);
+        //   });
+        // }else{
+        //   var reqdata = result['multiline']['mean'];
+        //   var headers = reqdata.map(function(item, index){
+        //     return (new Date(item[0])).toUTCString().substring(8,16);
+        //   });
+        //   data = reqdata.map(function(item, index){
+        //       return item[1];
+        //   });
+        // }
 
         if (args.graphType == 'multiline') args.graphType = 'line';
 
@@ -457,7 +474,7 @@ app.createHelpers = function(){
           headers: headers,
           name:args.name,
           data: data,
-          graphType:args.graphType,
+          graphType:'line',//args.graphType,
           title:args.title
         });
       }
@@ -580,6 +597,7 @@ app.initiUI = function(){
     });
   });
   app.populateL1();
+
   // mapApp.mapVariableChanged($("#selmapvar")[0]);
 }
 
@@ -596,4 +614,8 @@ jQuery(function($) {
   app.createHelpers();
   app.initiUI();
   app.addHandlers();
+  $(".app-title").append("- "+app.URLparams.c);
+  $("#curlink").prop('href',$("#curlink").prop('href')+"/?c="+app.URLparams.c);
+  $("#sealink").prop('href',$("#sealink").prop('href')+"/?c="+app.URLparams.c);
+  $("#outlink").prop('href',$("#outlink").prop('href')+"/?c="+app.URLparams.c);
 });

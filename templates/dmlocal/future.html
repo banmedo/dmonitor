@@ -16,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Django" />
 
-    <title class="app-title">National agricultural drought watch </title>
+    <title class ="app-title">National agricultural drought watch </title>
 
 
     <link rel="shortcut icon" href="tethys_portal/images/favicon.jpg" />
@@ -49,20 +49,25 @@
                 <div class="logos pull-right">
                     <!--<img src="~/Content/images/afghanistanemblem.png" />
                     <img src="~/Content/images/Afghanistan_MoEW1.png" />-->
-                    <img src="http://tethys.icimod.org/static/sldasdataforecast/icons/logo-icimod.png" style="height: 35px;margin-top: 10px;" />
+                    <img src="{% static 'saldasforecast/icons/logo-icimod.png' %}" style="height: 35px;margin-top: 10px;" />
                 </div>
             </div>
+
         <div class="toolbar">
             <div>
-                <a href="/apps/dmlocal" type="button" class="btn btn-sm toolbtn-custom active" id="curlink">Current</a>
-                <a href="/apps/dmlocal/seasonal" type="button" class="btn btn-sm toolbtn-custom" id="sealink">Seasonal</a>
-                <a href="/apps/dmlocal/outlook" type="button" class="btn btn-sm toolbtn-custom" id="outlink">Outlook</a>
+              <a href="/apps/dmlocal" type="button" class="btn btn-sm toolbtn-custom" id="curlink">Current</a>
+              <a href="/apps/dmlocal/seasonal" type="button" class="btn btn-sm toolbtn-custom" id="sealink">Seasonal</a>
+              <a href="/apps/dmlocal/outlook" type="button" class="btn btn-sm toolbtn-custom active" id="outlink">Outlook</a>
             </div>
         </div>
+
         <div class="container-fluid main-container has-toolbar">
+
+
             <div class="row full-height">
                 <!--LEFT-->
                 <div class="col-md-2 full-height">
+
                     <!--LEFT TOP-->
                     <div class="row top-row">
                         <div class="col-md-12 colpad padtop">
@@ -92,6 +97,7 @@
                                                 </div>
 
                                         </div>
+
                                         <div id = "basins" class="form-group " >
                                               <div class="radio">
                                                     <label class="control-label col-md-12" style="padding-right:0;">
@@ -100,42 +106,32 @@
                                                         <select id="selectl2" name="selectl2" class="form-control" style="margin-top:5px"></select>
                                                     </label>
                                                 </div>
+
                                         </div>
-                                        <!-- <div id = "basins" class="form-group col-md-6" style="padding:0 5px 0 0;margin-top:8px;">
-                                              <label class="control-label" for="startDate">From Date</label>
-                                              <input id="startDate" name="startDate" class="datepicker form-control" placeholder="Start Date">
-                                        </div>
-                                        <div id = "basins" class="form-group col-md-6" style="padding:0 0 0 5px;margin-top:8px;">
-                                              <label class="control-label" for="endDate">To Date</label>
-                                              <input id="endDate" name="endDate" class="datepicker form-control" placeholder="End Date">
-                                        </div> -->
-                                        <label class="control-label">Select Periodicity</label>
+                                        <label class="control-label col-md-12" style="padding-right:0;">Select Ensemble</label>
                                         <div class="form-group">
-                                          <div class="col-sm-12">
-                                            <div class="radio">
-                                              <label><input type="radio" name="periodicity" value="dd" checked>Dekad (10 Days)</label>
-                                            </div>
-                                            <div class="radio">
-                                              <label><input type="radio" name="periodicity" value="mm">1 Month</label>
-                                            </div>
-                                            <div class="radio">
-                                              <label><input type="radio" name="periodicity" value="3m">3 Months</label>
-                                            </div>
+                                          <div class='col-sm-12' style="padding:0">
+                                            <select id="selecten" name="selecten" class="form-control" style="margin-top:5px">
+                                              <option value="mean">Mean</option>
+                                              <option value="ens0">1</option>
+                                              <option value="ens1">2</option>
+                                              <option value="ens2">3</option>
+                                              <option value="ens3">4</option>
+                                              <option value="ens4">5</option>
+                                              <option value="ens5">6</option>
+                                              <option value="ens6">7</option>
+                                            </select>
                                           </div>
                                         </div>
-                                        <div id = "indices" class="form-group">
-                                              <label class="control-label">Select 4 Indices</label>
-                                              <select id="selectindex1" class="bound-dropdown form-control" style="margin-bottom:6px;"></select>
-                                              <select id="selectindex2" class="bound-dropdown form-control" style="margin-bottom:6px;"></select>
-                                              <select id="selectindex3" class="bound-dropdown form-control" style="margin-bottom:6px;"></select>
-                                              <select id="selectindex4" class="bound-dropdown form-control" ></select>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                        <div class="form-group">
+                                        <br><br><br>
+                                        <div class="clearfix" ></div>
+
+                                        <div class="form-group" style="padding:20px 0px 0px 0px">
                                             <a class="btn btn-custom btn-block" role="button" onclick="app.computeClicked(event)">Compute Indices</a>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -144,17 +140,17 @@
                     <div class="row bot-row">
                         <div class="col-md-12 colpad padtop padbottom col-mob-off">
                             <div class="panel " style="height:100%">
-                                <div class="panel-heading">
-                                    <h4 class="panel-title">
-                                        About
-                                    </h4>
-                                </div>
-                                <div class="panel-body">
-                                    <p style="text-align:justify;font-size:12px;">
-                                      ICIMOD is developing an integrated information platform linking weather and climate data with agriculture practices in the region. The platform provides data analysis support to professionals responsible for developing agro-met advisories for government agencies and ...
-                                    </p>
-                                    <a data-toggle="modal" href="#aboutModal"><b>View More ...</b></a>
-                                </div>
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      About
+                                  </h4>
+                              </div>
+                              <div class="panel-body">
+                                  <p style="text-align:justify;font-size:12px;">
+                                    ICIMOD is developing an integrated information platform linking weather and climate data with agriculture practices in the region. The platform provides data analysis support to professionals responsible for developing agro-met advisories for government agencies and ...
+                                  </p>
+                                  <a data-toggle="modal" href="#aboutModal"><b>View More ...</b></a>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -162,35 +158,60 @@
                 </div>
 
                <div class="col-md-10 full-height">
+
+
                     <div id="map-section" class="row top-row" style="position:relative;">
+
+
                         <div class="col-md-8 full colpad padtop pull-div">
                             <div class="panel" style="height:100%;padding:10px;">
-                                <div id="mapDiv" style="height:100%;position:relative; padding:0; margin:0; overflow:hidden;">
+                                <div id="mapDiv">
                                     <div class="card map-container" id="map-container" style="width:100%;height:100%;"></div>
+                                    <!--<div class="btn-float shadow-all" onclick="maximizeTopPanel(this,'map-section','chart-section')" style="right:8px;bottom:8px;z-index:9999;">-->
+                                        <!--<i class="glyphicon glyphicon-chevron-down"></i>-->
+                                    <!--</div>-->
+
+                                    <!--<div id="maplegend"> </div>-->
                                     <div class="card map-container" id="top-map-container"></div>
+
+
+
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-4 full-height colpad padtop no-pull-div">
-                            <div class="panel" style="height:100%;">
-                                <div id="chart0" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                            <div class="panel" style="height:100%;padding:10px;">
+                                <div id="chart0" class="panel-body" style="height:100%;overflow:hidden;padding:0 10px;"></div>
                             </div>
                         </div>
+
                     </div>
+
+
+
                     <div id="chart-section" class="row bot-row">
                         <div class="col-md-4 colpad padtop padbottom" style="padding-left:0;">
                             <div class="panel " style="height:100%">
-                                <div id="chart1" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart1" class="panel-body" style="height:100%;overflow:hidden;padding:0 10px;"></div>
+
+
                             </div>
                         </div>
+
                         <div class="col-md-4  colpad padtop padbottom">
                             <div class="panel " style="height:100%">
-                                <div id="chart2" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart2" class="panel-body" style="height:100%;overflow:hidden;padding:0 10px;"></div>
+
+
                             </div>
                         </div>
+
                         <div class="col-md-4 colpad padtop padbottom">
                             <div class="panel " style="height:100%">
-                                <div id="chart3" class="panel-body" style="height:100%;overflow:hidden;padding:0;"></div>
+                                <div id="chart3" class="panel-body" style="height:100%;overflow:hidden;padding:0 10px;"></div>
+
+
                             </div>
                         </div>
                     </div>
@@ -198,6 +219,8 @@
 
             </div>
         </div>
+
+
         <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -237,71 +260,20 @@
                 </div>
             </div>
         </div>
-        <svg width="0" height="0">
-          <defs>
-            <clipPath id="topMapClip">
-            </clipPath>
-          </defs>
-        </svg>
+
 
 {% block content_dependent_styles %}
 
 
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/ui-lightness/jquery-ui.css"/>
   <link rel="stylesheet" href="{% static 'dmlocal/css/leaflet.css' %}"/>
-  <link rel="stylesheet" href="{% static 'dmlocal/css/leaflet-slider.css' %}"/>
+  <link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
   <!--<link rel="stylesheet" href="{% static 'dmlocal/css/main0.css' %}"/>-->
   <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />-->
   <link rel="stylesheet" href="{% static 'dmlocal/css/MonthPicker.css' %}"/>
 {% endblock %}
 
    <style>
-        .legend{
-          background-color:#FFFFFF;
-          padding:5px;
-          border-radius:5px;
-          opacity:0.7;
-        }
-        .legend-symbol{
-          height:10px;
-          width:10px;
-        }
-        .legend-text{
-          transition-duration:0.07s;
-          padding:2px;
-          font-size:10px;
-        }
-        .leaflet-control-slider.leaflet-control-slider-horizontal p.leaflet-control-slider-value{
-          width:auto;
-          padding: 0px 5px;
-        }
-        .animControl{
-          padding:0;
-        }
-        .leaflet-btn-anim{
-          width:30px;
-          margin:2px;
-          display:inline-block;
-          text-align:center;
-          cursor:pointer;
-          background-color:white;
-          box-shadow:0px 1px 5px rgba(0, 0, 0, 0.4);
-        }
-        .leaflet-span-anim{
-          /* width:30px; */
-          margin:2px;
-          padding: 0px 3px;
-          display:inline-block;
-          text-align:center;
-          cursor:default;
-          background-color:white;
-          box-shadow:0px 1px 5px rgba(0, 0, 0, 0.4);
-        }
-        .leaflet-control-slider.leaflet-control-slider-horizontal p.leaflet-control-slider-value {
-            width: auto;
-            padding: 0px 5px;
-        }
-
         @media only screen and (min-width: 1024px) {
             .top-row {
                 height: 55%;
@@ -313,9 +285,12 @@
     </style>
 
 {% block scripts %}
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
   <script src="{% static 'dmlocal/js/leaflet.js' %}"></script>
-  <script src="{% static 'dmlocal/js/leaflet-slider.js' %}"></script>
+  <!-- <script src="{% static 'dmlocal/js/leaflet-slider.js' %}"></script> -->
+  <script type="text/javascript" src="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
 
   <!-- <script src="{% static 'dmlocal/js/highcharts.js' %}"></script> -->
   <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
@@ -323,15 +298,13 @@
   <script type="text/javascript" src="http://code.highcharts.com/modules/exporting.js"></script>
   <script type="text/javascript" src="http://code.highcharts.com/modules/export-data.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
   <script src="{% static 'dmlocal/js/MonthPicker.js' %}"></script>
   <script src="{% static 'dmlocal/js/CropCalendar.js' %}"></script>
-  <script src="{% static 'dmlocal/js/VisParams.js' %}"></script>
+  <script src="{% static 'dmlocal/js/OutlookVisParam.js' %}"></script>
 
-  <script src="{% static 'dmlocal/js/MapFunctions.js' %}"></script>
-  <script src="{% static 'dmlocal/js/main_minimum.js' %}"></script>
+  <script src="{% static 'dmlocal/js/outlookMap.js' %}"></script>
+  <script src="{% static 'dmlocal/js/outlook.js' %}"></script>
 {% endblock %}
 
 

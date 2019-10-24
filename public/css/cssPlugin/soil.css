@@ -1,0 +1,40 @@
+﻿
+body {
+    color: #333;
+    background-color: #83687B;
+}
+
+.banner {
+    background-color: #4F1B1D;
+    color: #333;
+}
+
+.panel-heading, .modal-header, .toolbar {
+    color: white;
+    background-color: #2E1115;
+}
+
+.btn-custom, .btn-float {
+    background-color: #4F1B1D;
+    color: white !important;
+}
+
+.toolbtn-custom:active, .toolbtn-custom.active, .toolbtn-custom:hover {
+    background-color: #83687B;
+    border-color: transparent;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+    background: #4F1B1D;
+    border: 1px solid #4F1B1D;
+}
+
+.listview-2.active, .listview-2.active:hover {
+    background-color: #4F1B1D;
+    color: white;
+}
+
+.listview-2:hover {
+    background-color: #83687B;
+    color: white;
+}
