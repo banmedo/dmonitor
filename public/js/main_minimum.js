@@ -21,7 +21,7 @@ app.createConstants = function(){
       'Pakistan(Rangeland)':'l2Islamabad'
     },
     PERIOD: 'mm',
-    YEAR: '2018',
+    YEAR: new Date().getFullYear()+'',
     INDICES: 'rain,evap,soilMoist,tempExtreme'
   }
   app.COLORS = {
